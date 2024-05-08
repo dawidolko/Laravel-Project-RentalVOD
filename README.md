@@ -9,7 +9,7 @@ Welcome to the VOD Platform Project, a Laravel-based solution designed for strea
 - PHP >= 8.1
 - Composer
 - MySQL (MariaDB 10.6 or higher) or a compatible database
-- Laravel 9.x
+- Laravel 11.x
 - Node.js and NPM (for compiling assets)
 - Stripe for secure online payment processing
 
