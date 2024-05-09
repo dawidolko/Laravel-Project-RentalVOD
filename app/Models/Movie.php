@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Movie extends Model
 {
     public $timestamps = false;
-    protected $table = 'movies'; // Nazwa tabeli w bazie danych
+    protected $table = 'movies';
 
     protected $fillable = [
         'id', 'title', 'description', 'category_id', 'director', 'release', 'longTime', 'rate', 'img_path', 'pricePerDay', 'available'

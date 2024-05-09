@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Movie;
-use App\Models\Movies;
-use Illuminate\Http\Request;
 
 
 class HomeController extends Controller
@@ -24,17 +21,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();  
         $movies = Movie::where('available', 'dostępny')
                        ->inRandomOrder()
                        ->limit(6)
                        ->with('category')
                        ->get();
-        return view('home', compact('categories', 'movies'));  
+        return view('home', compact('movies'));  
     }
     public function regulamin()
     {
-        $categories = Category::all(); 
-        return view('regulamin', compact('categories')); 
+        return view('regulamin'); 
     }
 }

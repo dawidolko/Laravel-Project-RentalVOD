@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use App\Models\Movies;
 
 class LoansMoviesSeeder extends Seeder
@@ -59,9 +57,7 @@ class LoansMoviesSeeder extends Seeder
             ],
         ];
 
-        // Wstawianie danych do tabeli
         foreach ($loanMovies as $loanMovie) {
-            // DB::table('loan_movie')->insert([
                 Movies::insert([
                 'loan_id' => $loanMovie['loan_id'],
                 'movie_id' => $loanMovie['movie_id'],    ]);

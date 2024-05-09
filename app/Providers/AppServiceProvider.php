@@ -33,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('is-admin', function ($user) {
             return $user->role_id == 1;
         });
+
+        view()->composer('*', function ($view) {
+            $view->with('categories', Category::all());
+        });
     }
 }

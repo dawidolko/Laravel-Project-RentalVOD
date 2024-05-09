@@ -20,6 +20,6 @@ class IsAdmin
         if (Auth::check() && Auth::user()->role_id == 1) {
             return $next($request);
         }
-        abort(403); // Forbid access if not admin
+        abort(403);
     }
 }

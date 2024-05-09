@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
   </head>
   <body>
-    @include('layouts.navbar', ['categories' => $categories])
+    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
+    @include('layouts.navbar')
 
     <div id="carouselExampleInterval" class="carousel slide p-1" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -75,7 +76,9 @@
   
               <div class="product-grid">
                 @if ($movies->isEmpty())
-                  <p>Brak filmów.</p>
+                <div class="alert alert-danger" role="alert">
+                    BRAK FILMÓW
+                </div>
                 @else
                     @foreach ($movies as $movie)
                       <div class="showcase">
@@ -85,15 +88,15 @@
                     
                               <div class="showcase-actions">
                           
-                              <button class="btn-action magnification">
-                                  <ion-icon name="eye-outline"></ion-icon>
-                              </button>
-                  
-                              <button class="btn-action bag-add">
-                                <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
-                                  <ion-icon name="bag-add-outline"></ion-icon>
-                                </a>
-                              </button>
+                                <button class="btn-action magnification">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </button>
+                    
+                                <button class="btn-action bag-add">
+                                  <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
+                                    <ion-icon name="bag-add-outline"></ion-icon>
+                                  </a>
+                                </button>
                               </div>
                           </div>
       

@@ -68,6 +68,7 @@
                 <!-- Photo section -->
                 <div class="photo text-center">
                     <img src="{{ url(Auth::user() ? Auth::user()->avatar : 'storage/img/user.png') }}" class="rounded-circle" height="100" alt="Portrait of a User" loading="lazy"/>
+                    {{-- <img src="{{ asset('storage/avatars/' . basename(Auth::user()->avatar)) }}"" class="rounded-circle" height="100" alt="Portrait of a User" loading="lazy"/> --}}
                     <form method="POST" action="{{ route('user.update_avatar') }}" enctype="multipart/form-data" class="needs-validation mt-3" novalidate>
                         @csrf
                         @method('PUT')
@@ -85,50 +86,56 @@
     </div>    
 
     <h3>Aktualne wypożyczenia:</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered text-white">
-            <thead>
-                <tr>
-                    <th>Film</th>
-                    <th>Data rozpoczęcia</th>
-                    <th>Data zakończenia</th>
-                    <th>Cena całkowita</th>
-                    <th>Status</th>
-                    <th>Dodaj opinię</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($loans as $loan)
-                    @foreach ($loan->movies as $movie)
+    @if($loans->isEmpty()) 
+        <div class="alert alert-danger" role="alert">
+            BRAK WYPOŻYCZONYCH FILMÓW
+        </div>
+    @else
+        <div class="table-responsive">
+            <table class="table table-bordered text-white">
+                <thead>
                     <tr>
-                        <td>
-                            @if ($loan->status !== 'zwrócone')
-                                <a href="{{ route('loans.show', $movie->id) }}">{{ $movie->title }}</a>
-                            @else
-                                {{ $movie->title }}
-                            @endif
-                        </td>
-                        <td>{{ $loan->start }}</td>
-                        <td>{{ $loan->end }}</td>
-                        <td>{{ number_format($loan->price, 2) }} zł</td>
-                        <td>{{ $loan->status }}</td>
-                        <td>
-                            <button onclick="toggleReviewForm({{ $loan->id }})" class="btn btn-info">Dodaj opinię</button>
-                            <div id="review-form-{{ $loan->id }}" style="display:none;">
-                                <form action="{{ route('opinions.store') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="movie_id" value="{{ $movie->id }}">
-                                    <textarea name="content" placeholder="Wpisz swoją opinię" required></textarea>
-                                    <button type="submit" class="btn btn-primary">Wyślij</button>
-                                </form>
-                            </div>
-                        </td>
+                        <th>Film</th>
+                        <th>Data rozpoczęcia</th>
+                        <th>Data zakończenia</th>
+                        <th>Cena całkowita</th>
+                        <th>Status</th>
+                        <th>Dodaj opinię</th>
                     </tr>
-                    @endforeach
-                @endforeach            
-            </tbody>
-        </table>        
-    </div>    
+                </thead>
+                <tbody>
+                    @foreach ($loans as $loan)
+                        @foreach ($loan->movies as $movie)
+                        <tr>
+                            <td>
+                                @if ($loan->status !== 'zwrócone')
+                                    <a href="{{ route('loans.show', $movie->id) }}">{{ $movie->title }}</a>
+                                @else
+                                    {{ $movie->title }}
+                                @endif
+                            </td>
+                            <td>{{ $loan->start }}</td>
+                            <td>{{ $loan->end }}</td>
+                            <td>{{ number_format($loan->price, 2) }} zł</td>
+                            <td>{{ $loan->status }}</td>
+                            <td>
+                                <button onclick="toggleReviewForm({{ $loan->id }})" class="btn btn-info">Dodaj opinię</button>
+                                <div id="review-form-{{ $loan->id }}" style="display:none;">
+                                    <form action="{{ route('opinions.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+                                        <textarea name="content" placeholder="Wpisz swoją opinię" required></textarea>
+                                        <button type="submit" class="btn btn-primary">Wyślij</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endforeach            
+                </tbody>
+            </table>        
+        </div>    
+    @endif
 </div>
 @else
     <div class="full-height">
@@ -146,5 +153,26 @@
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.needs-validation');
+        form.addEventListener('submit', function (event) {
+            const fileInput = document.getElementById('avatar');
+            let valid = true;
+    
+            if (fileInput.files.length === 0) {
+                valid = false;
+                fileInput.classList.add('is-invalid');
+            } else {
+                fileInput.classList.remove('is-invalid');
+            }
+    
+            if (!valid) {
+                event.preventDefault(); 
+                event.stopPropagation();
+            }
+        });
+    });
+</script>    
 </body>
 </html>

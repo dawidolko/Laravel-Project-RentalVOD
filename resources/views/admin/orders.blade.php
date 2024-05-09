@@ -1,100 +1,118 @@
-
 @include('layouts.html')
-  
-  @include('layouts.slider')
-  @include('layouts.head', ['pageTitle' => 'RentalVOD - strona główna'])
-  <head>
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+@include('layouts.head', ['pageTitle' => 'RentalVOD - Admin Orders'])
 
+<head>
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
-<style>
-    .list-group-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    @media (max-width: 576px) {
-        .list-group-item {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .list-group-item .text-white {
-            margin-bottom: 1rem;
-        }
-
-        .list-group-item .wrap {
-            margin-top: 1rem;
-        }
-
-        .list-group-item .actions {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Resetowanie wszystkich potencjalnych konfliktów z paginacją */
+        html, body {
+            height: 100%; /* Ustawienie wysokości strony na 100% */
+            margin: 0;
+            padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            flex-direction: column; /* Ustawienie kierunku flex na pionowy */
         }
-    }
-</style>
+
+        .container {
+            flex: 1; /* Sprawia, że kontener z treścią rozciąga się, aby zająć dostępną przestrzeń */
+            display: flex;
+            flex-direction: column; /* W razie potrzeby */
+        }
+
+        .footer {
+            margin-top: auto; /* Automatycznie przesuwa stopkę na dół */
+        }
+
+
+        </style>              
 </head>
+
 <body>
-  @include('layouts.navbar')
+@include('layouts.navbar')
 
-
-{{-- 
-<div class="container text-white">
+<div class="container mt-4">
     <h1>Wszystkie zamówienia</h1>
-
-    <ul class="list-group text-white">
-        @foreach ($loans as $loan)
-            <li class="list-group-item bg-dark text-white">
-                <div>
-                    <strong>ID zamówienia:</strong> {{ $loan->id }}
-                    <strong>Data zamówienia:</strong> {{ $loan->start_loan }}
-                    <strong>Email klienta:</strong> {{ $loan->user->email }}<br>
-                    <strong>Filmy:</strong>
-                    <ul>
-                        @foreach ($loan->movies as $movie)
-                            <li>{{ $movie->title }}</li>
-                        @endforeach
-                    </ul>
-                    <strong>Status:</strong> {{ $loan->status }}
-                </div>
-                <div class="actions">
-                    <button class="btn custom-btn m-2 w-100" onclick="showForm({{ $loan->id }})">Zmień status</button>
-                    <form id="form-{{ $loan->id }}" class="m-2" style="display: none;" action="{{ route('loans.update', $loan->id) }}" method="post">
-                        @csrf
-                        @method('put')
-                        <select name="status" class="form-control">
-                            <option value="Nieopłacone" {{ $loan->status == 'Nieopłacone' ? 'selected' : '' }}>Nieopłacone</option>
-                            <option value="Opłacone" {{ $loan->status == 'Opłacone' ? 'selected' : '' }}>Opłacone</option>
-                            <option value="Wysłane" {{ $loan->status == 'Wysłane' ? 'selected' : '' }}>Wysłane</option>
-                            <option value="Zwrócone" {{ $loan->status == 'Zwrócone' ? 'selected' : '' }}>Zwrócone</option>
-                        </select>
-                        <button type="submit" class="btn btn-danger mt-2">Zapisz</button>
-                    </form>
-                </div>
-            </li>
-        @endforeach
-    </ul>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Zdjęcie</th>
+                <th>Tytuł filmu</th>
+                <th>Cena całkowita</th>
+                <th>Email</th>
+                <th>Czas rozpoczęcia</th>
+                <th>Czas zakończenia</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($loans as $loan)
+                @foreach ($loan->movies as $movie)
+                <tr>
+                    <td><img src="{{ asset('storage/'.$movie->img_path) }}" alt="Obrazek filmu" class="img-fluid" style="width: 100px;"></td>
+                    <td>{{ $movie->title }}</td>
+                    <td>{{ $loan->price }} PLN</td>
+                    <td>{{ $loan->user->email }}</td>
+                    <td>{{ \Carbon\Carbon::parse($loan->start)->format('Y-m-d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($loan->end)->format('Y-m-d') }}</td>
+                    <td>{{ $loan->status }}</td>
+                </tr>
+                @endforeach
+            @endforeach
+        </tbody>
+    </table>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                {{ $loans->links('pagination::bootstrap-4') }}
+            </div>
+        </div> 
+        <div class="container mt-4">
+            <h1>Wykres cen zamówień</h1>
+            <canvas id="priceHistogram" width="400" height="400"></canvas> <!-- Tutaj dodajemy canvas -->
+            <table class="table table-hover">
+                ...
+            </table>
+            ...
+        </div>
+        
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const prices = @json($loans->getCollection()->pluck('price')->toArray());
+    
+        const ctx = document.getElementById('priceHistogram').getContext('2d');
+        const priceHistogram = new Chart(ctx, {
+            type: 'bar', // Wybór typu wykresu na bar (histogram)
+            data: {
+                labels: prices, // Tutaj możesz potrzebować generować zakresy cen jeśli są zbyt wiele unikalnych wartości
+                datasets: [{
+                    label: 'Rozkład cen zamówień',
+                    data: prices, // Dane, które będą wyświetlane
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <script>
     function showForm(id) {
         var form = document.getElementById('form-' + id);
-        if (form.style.display === 'none') {
-            form.style.display = 'block';
-        } else {
-            form.style.display = 'none';
-        }
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
-</script> --}}
+</script>
 
 @include('layouts.footer', ['fixedBottom' => false])
 <script defer src="{{ asset('js/magnification.js') }}"></script>

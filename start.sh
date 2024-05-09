@@ -23,7 +23,7 @@ php -r "copy('.env.example', '.env');"
 
 composer install
 
-composer update
+# composer update
 
 composer require stripe/stripe-php
 
@@ -31,9 +31,9 @@ php artisan key:generate
 
 php artisan storage:link
 
-php artisan migrate
+# php artisan migrate
 
-php artisan db:seed
+# php artisan db:seed
 
 php artisan migrate:fresh --seed
 

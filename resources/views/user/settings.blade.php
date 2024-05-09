@@ -60,9 +60,11 @@
                 @endif
     
                 {{-- Komunikaty o błędach --}}
-                @if (session('error'))
-                    <div class="alert alert-danger" role="alert">
-                        {{ session('error') }}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        @foreach ($errors->all() as $error)
+                            <p>{{ $error }}</p>
+                        @endforeach
                     </div>
                 @endif
     
@@ -102,21 +104,6 @@
     <div class="container mt-5 mb-5">
         <div class="row d-flex justify-content-center">
             <div class="col-md-6">
-                {{-- Komunikaty o sukcesie --}}
-                @if (session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-    
-                {{-- Komunikaty o błędach --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
-                        @endforeach
-                    </div>
-                @endif
     
                 <form method="POST" action="{{ route('user.change_password') }}" class="needs-validation" novalidate>
                     @csrf
@@ -149,5 +136,33 @@
 @endif
 
 @include('layouts.footer', ['fixedBottom' => false])
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const settingsForm = document.querySelector('.needs-validation');
+        settingsForm.addEventListener('submit', function (event) {
+            const address = document.getElementById('address');
+            const city = document.getElementById('city');
+            let valid = true;
+    
+            // Walidacja adresu
+            if (!address.value.match(/^[a-zA-Z0-9\s,.-]+$/)) {
+                valid = false;
+                alert('Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-');
+            }
+    
+            // Walidacja miasta
+            if (!city.value.match(/^[a-zA-Z\s-]+$/)) {
+                valid = false;
+                alert('Nazwa miasta może zawierać tylko litery i spacje.');
+            }
+    
+            if (!valid) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+    });
+</script>
+    
 </body>
 </html>

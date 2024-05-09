@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Movie;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class MoviesSeeder extends Seeder
 {
@@ -657,7 +656,7 @@ class MoviesSeeder extends Seeder
                 'category_id' => 11, 
                 'director' => 'Matt Groening',
                 'release_year' => 1989,
-                'duration' => 22, // Średnia długość odcinka
+                'duration' => 22,
                 'rate' => 8.7,
                 'img_path' => 'img/the_simpsons.jpg',
                 'video_path' => 'XPG0MqIcby8', 

@@ -1,6 +1,6 @@
 @include('layouts.html')
 
-@include('layouts.head', ['pageTitle' => 'RentalVOD - 404'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - 400'])
 <head>
     <style>
         html, body {
@@ -15,7 +15,7 @@
             flex: 1; 
             display: flex;
             flex-direction: column; 
-            justify-content: center;
+            justify-content: center;  // Centruje treść na stronie
         }
 
         .footer {
@@ -27,23 +27,16 @@
 @include('layouts.navbar')
 
 <div class="container mt-5 mb-5">
-    @if (session('error'))
-        <div class="row d-flex justify-content-center">
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        </div>
-    @endif
     <div class="row mt-4 mb-4 text-center card">
-        <h1 class="display-1 fw-bold">404</h1>
+        <h1 class="display-1 fw-bold">400</h1>
         <h2>
             @if (App::environment('local'))
-                {{ $exception->getMessage() ?: 'Nie znaleziono strony' }}
+                {{ $exception->getMessage() ?: 'Żądanie niepoprawne.' }}
             @else
-                Nie znaleziono strony
+                Żądanie niepoprawne.
             @endif
         </h2>
-        <p>Przepraszamy, strona, której szukasz, nie istnieje lub została przeniesiona. Spróbuj <a href="{{ url('/') }}">wrócić na stronę główną</a> lub skontaktuj się z nami, jeśli potrzebujesz dalszej pomocy.</p>
     </div>
-
     @include('layouts.validation-error')
 </div>
 

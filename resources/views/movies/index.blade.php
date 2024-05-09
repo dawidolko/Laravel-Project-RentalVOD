@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
   </head>
   <body>
-    @include('layouts.navbar', ['categories' => $categories])
-
+    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
+    @include('layouts.navbar')
 
     <div class="container text-white w-50" style="margin-top:80px;">
         <form action="{{ route('movies.index') }}" method="GET" class="row">
@@ -95,7 +95,11 @@
                 @if ($movies->isEmpty())
                     <p>Brak filmów.</p>
                 @endif
-
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                {{ $movies->links('pagination::bootstrap-4') }}
             </div>
         </div>
       </div>

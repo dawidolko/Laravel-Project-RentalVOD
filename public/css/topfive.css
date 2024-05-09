@@ -28,7 +28,7 @@
 .unique-frame {
     flex: 0 0 auto;
     width: 300px;
-    height: 200px; /* Zdefiniuj wysokość, aby pomóc w wyśrodkowaniu strzałek */
+    height: 200px;
     margin: 5px;
     position: relative;
     overflow: hidden;
@@ -51,7 +51,7 @@
     z-index: 10;
     pointer-events: none;
     text-align: center;
-    display: none; /* Ukryj na początku */
+    display: none;
     background-color: black;
     padding: 10px;
 }

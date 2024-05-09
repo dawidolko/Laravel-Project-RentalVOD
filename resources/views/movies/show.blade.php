@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="{{ asset('css/movieStyle.css') }}" />
   </head>
   <body>
-    @include('layouts.navbar', ['categories' => $categories])
+    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
+    @include('layouts.navbar')
 
     <div id="imageOverlay" class="image-overlay" style="display: none">
         <span class="close-btn">&times;</span>

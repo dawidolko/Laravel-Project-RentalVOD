@@ -120,7 +120,9 @@
                 </div>
             </div>
             @else
-                <div class="text-large">Twój koszyk jest pusty.</div>
+            <div class="alert alert-danger" role="alert">
+                KOSZYK JEST PUSTY
+            </div>
             @endif
         </div>
     @else

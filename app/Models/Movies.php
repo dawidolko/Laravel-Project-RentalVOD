@@ -10,7 +10,7 @@ class Movies extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $table = 'loan_movie'; // Nazwa tabeli w bazie danych
+    protected $table = 'loan_movie';
 
     protected $fillable = [
         'id', 'loan_id', 'movie_id'

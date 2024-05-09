@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateOpinionsTable extends Migration
 {
+    /**
+    * Run the migrations.
+    */
     public function up()
     {
         Schema::create('opinions', function (Blueprint $table) {
@@ -19,6 +22,9 @@ class CreateOpinionsTable extends Migration
         });        
     }
 
+    /**
+    * Reverse the migrations.
+    */
     public function down()
     {
         Schema::dropIfExists('opinions');

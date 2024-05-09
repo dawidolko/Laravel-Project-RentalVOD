@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Loan;
 use App\Models\Movie;
-use App\Models\Movies;
 use DateTime;
-use Exception;
-use File;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Response;
 
 class UsersController extends Controller
 {
@@ -30,7 +25,6 @@ class UsersController extends Controller
             $query->where('user_id', $user_id);
         }])->findOrFail($movie_id);
     
-        // Check if there is an active loan that is not returned
         $userHasAccess = $movie->loans->contains(function ($loan) {
             return $loan->status !== 'zwrócone';
         });
@@ -42,21 +36,6 @@ class UsersController extends Controller
         }
     }
     
-
-    // public function showProfile()
-    // {
-    //     $user_id = Auth::id();
-    //     $loans = Loan::with('movies')->where('user_id', $user_id)->get();
-    
-    //     foreach ($loans as $loan) {
-    //         if (new DateTime($loan->end) < new DateTime() && $loan->status !== 'zwrócone') {
-    //             $loan->status = 'zwrócone';
-    //             $loan->save(); 
-    //         }
-    //     }
-    
-    //     return view('user.profile', compact('loans'));
-    // }
 
     public function showCart()
     {
@@ -71,10 +50,15 @@ class UsersController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s,.-]+$/',
+            'city' => 'required|string|max:255|regex:/^[a-zA-Z\s-]+$/'
+        ], [
+            'address.required' => 'Adres jest wymagany.',
+            'address.regex' => 'Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-',
+            'city.required' => 'Nazwa miasta jest wymagana.',
+            'city.regex' => 'Nazwa miasta może zawierać tylko litery i spacje.'
         ]);
-
+    
         $user = Auth::user();
         if ($user) {
             $user->address = $request->address;
@@ -82,39 +66,52 @@ class UsersController extends Controller
             $user->save();
             return back()->with('success', 'Dane zostały zaktualizowane.');
         }
-
+    
         return back()->with('error', 'Nie udało się zaktualizować danych.');
     }
+    
 
     public function changePassword(Request $request)
     {
         $request->validate([
-            'current_password' => 'required', 
-            'new_password' => 'required|string|min:8|confirmed',
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+        ], [
+            'new_password.min' => 'Hasło musi zawierać co najmniej 8 znaków.',
+            'new_password.confirmed' => 'Potwierdzenie hasła nie zgadza się.',
+            'new_password.regex' => 'Hasło musi zawierać co najmniej jedną wielką literę, jedną małą literę, jedną cyfrę i jeden znak specjalny.'
         ]);
-
+    
         $user = Auth::user();
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Obecne hasło jest nieprawidłowe'])->withInput();
+            return back()->withErrors(['current_password' => 'Obecne hasło jest nieprawidłowe']);
         }
-
+    
         $user->password = Hash::make($request->new_password);
         $user->save();
         return back()->with('success', 'Hasło zostało zmienione.');
     }
+    
 
     public function updateAvatar(Request $request)
     {
-        $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $validatedData = $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Limit 2MB
+        ], [
+            'avatar.required' => 'Musisz wybrać plik.',
+            'avatar.image' => 'Plik musi być obrazem.',
+            'avatar.mimes' => 'Dopuszczalne są tylko pliki w formatach: jpeg, png, jpg, gif, svg.',
+            'avatar.max' => 'Maksymalny rozmiar pliku to 2048 kB.'
         ]);
-
+    
         $user = Auth::user();
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $avatarPath = $request->file('avatar')->store('avatars', 'public'); 
         $user->avatar = 'storage/' . $avatarPath;
         $user->save();
+
+    
         return back()->with('success', 'Awatar został zaktualizowany.');
-    }
+    }    
     
     public function addToCart(Request $request, $movie_id)
     {
@@ -201,5 +198,4 @@ class UsersController extends Controller
 
         return back()->with('error', 'Film nie znaleziony w koszyku.');
     }
-
 }

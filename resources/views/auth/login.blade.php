@@ -60,8 +60,8 @@
                     @enderror
                 </div>
                 <div class="form-group mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                    <label class="form-check-label" for="remember">Zapamiętaj hasło</label>
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
+                    <label class="form-check-label" for="remember">Zapamiętaj mnie</label>
                 </div>
                 
                 <div class="text-center mt-4 mb-4">
@@ -75,5 +75,36 @@
 
 
     @include('layouts.footer', ['fixedBottom' => false])
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function (event) {
+                let valid = true;
+                const email = document.getElementById('email');
+                const password = document.getElementById('password');
+        
+                // Prosta walidacja e-mail
+                if (!email.value.includes('@') || !email.value.includes('.')) {
+                    valid = false;
+                    email.classList.add('is-invalid');
+                } else {
+                    email.classList.remove('is-invalid');
+                }
+        
+                // Prosta walidacja hasła
+                if (password.value.length < 8) {
+                    valid = false;
+                    password.classList.add('is-invalid');
+                } else {
+                    password.classList.remove('is-invalid');
+                }
+        
+                if (!valid) {
+                    event.preventDefault(); 
+                }
+            });
+        });
+    </script>
+        
 </body>
 </html>

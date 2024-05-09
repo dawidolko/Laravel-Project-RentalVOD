@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Movie;
-use App\Models\Movies;
 use File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Response;
 
 class MoviesController extends Controller
@@ -25,8 +22,7 @@ class MoviesController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(Request $request)
-    {
-        $categories = Category::all();  
+    { 
         $movies = Movie::with('category')->get();
 
         $query = Movie::with('category');
@@ -62,33 +58,32 @@ class MoviesController extends Controller
                 break;
         }
 
-        $movies = $query->get();
+        $movies = $query->paginate(6);
 
-        return view('movies.index', compact('categories', 'movies'));  
+        return view('movies.index', compact('movies'));  
     }
 
     public function show($id)
     {
-        $categories = Category::all();  
         $movie = Movie::with(['category', 'opinions.user'])->where('id', $id)->firstOrFail();
-        return view('movies.show', compact('categories', 'movie'));   
+        return view('movies.show', compact('movie'));   
     }
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $categories = Category::all();
         $movies = Movie::where('available', 'dostępny')
-                       ->where(function($queryBuilder) use ($query) {
-                           $queryBuilder->where('title', 'LIKE', '%' . $query . '%')
+                    ->where(function($queryBuilder) use ($query) {
+                        $queryBuilder->where('title', 'LIKE', '%' . $query . '%')
                                         ->orWhere('director', 'LIKE', '%' . $query . '%')
                                         ->orWhere('description', 'LIKE', '%' . $query . '%')
                                         ->orWhereHas('category', function($queryBuilder) use ($query) {
                                             $queryBuilder->where('species', 'LIKE', '%' . $query . '%');
                                         });
-                       })
-                       ->get();
-        return view('movies.index', compact('movies', 'categories'));
+                    })
+                    ->paginate(10); 
+        return view('movies.index', compact('movies'));
     }
+
     public function image($id)
     {
         $movie = Movie::findOrFail($id);

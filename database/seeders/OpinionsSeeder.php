@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Opinion;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class OpinionsSeeder extends Seeder
 {
@@ -370,7 +369,6 @@ class OpinionsSeeder extends Seeder
         ];
 
         foreach ($opinions as $opinion) {
-            // DB::table('opinions')->insert([
             Opinion::insert([
                 'user_id' => $opinion['user_id'],
                 'movie_id' => $opinion['movie_id'],

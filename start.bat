@@ -6,7 +6,7 @@ php -r "copy('.env.example', '.env');"
 
 call composer install
 
-call composer update
+@REM call composer update
 
 call composer require stripe/stripe-php
 
@@ -14,9 +14,9 @@ call php artisan key:generate
 
 call php artisan storage:link
 
-call php artisan migrate
+@REM call php artisan migrate
 
-call php artisan db:seed
+@REM call php artisan db:seed
 
 call php artisan migrate:fresh --seed
 

@@ -326,14 +326,13 @@ a {
 }
 
 .product-grid .caseBox-info .btn-action:hover ion-icon {
-    color: red; /* Change this to the color you want on hover */
+    color: red;
 }
 
 .product-grid .caseBox-info .btn-action:active ion-icon {
-    color: purple; /* Change this to the color you want on click */
+    color: purple;
 }
 
-/* You may need to add !important to override any other specific styles */
 .product-grid .caseBox-info .btn-action:hover ion-icon[name="heart-outline"] {
     color: red !important;
 }
@@ -357,7 +356,6 @@ a {
     text-decoration: underline;
 }
 
-/* Opis produktu */
 .product-description {
     padding: 20px 20px 20px 20px;
     text-align: justify;
@@ -368,7 +366,6 @@ a {
     padding: 10px 10px 10px 10px;
 }
 
-/* Tabela specyfikacji */
 .product-specification {
     width: 95%;
     border-collapse: collapse;
@@ -399,20 +396,18 @@ a {
     color: white;
 }
 
-/* Alternatywne wiersze dla specyfikacji */
 .product-specification .alt {
     background-color: #f9f9f9;
 }
 
-/* Style dla Slidera */
 .slider {
     position: relative;
 }
 
 .slides-container {
     position: relative;
-    height: 600px; /* Przykładowa stała wysokość, dostosuj do swoich potrzeb */
-    overflow: hidden; /* Zapobiegaj wyświetlaniu się poza kontenerem */
+    height: 600px;
+    overflow: hidden;
 }
 
 .slide {
@@ -421,15 +416,15 @@ a {
     position: absolute;
     top: 0;
     left: 0;
-    display: block; /* Zawsze wyświetlaj, ale może być niewidoczne */
-    opacity: 0; /* Domyślnie niewidoczne */
-    transition: opacity 0.5s; /* Płynne przejście dla efektu przełączania */
-    object-fit: cover; /* Upewnij się, że zdjęcie pokrywa obszar bez rozciągania */
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s;
+    object-fit: cover;
 }
 
 .slide.active {
-    opacity: 1; /* Tylko aktywny slajd jest widoczny */
-    z-index: 2; /* Upewnij się, że jest nad innymi slajdami */
+    opacity: 1;
+    z-index: 2;
 }
 
 .slide-nav {
@@ -445,11 +440,11 @@ a {
 }
 
 .prev {
-    left: 10px; /* Ustawione wartości, aby zapobiec przyleganiu do krawędzi */
+    left: 10px;
 }
 
 .next {
-    right: 10px; /* Ustawione wartości, aby zapobiec przyleganiu do krawędzi */
+    right: 10px;
 }
 
 .thumbnail-container {
@@ -460,7 +455,7 @@ a {
 }
 
 .thumbnail {
-    width: 50px; /* Dostosuj szerokość, jeśli potrzebujesz */
+    width: 50px;
     cursor: pointer;
     opacity: 0.6;
     transition: opacity 0.3s;
@@ -497,7 +492,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Upewnij się, że jest na wierzchu */
+    z-index: 1000;
 }
 
 .overlay-image {
@@ -526,12 +521,12 @@ a {
 }
 
 .btn-action {
-    display: block; /* Zapewnia, że przyciski zajmują całą dostępną szerokość */
+    display: block;
 }
 
 .login-btn {
     flex-grow: 1;
-    margin-left: 20px; /* Odpowiedni odstęp od przycisków ikon */
+    margin-left: 20px;
 }
 
 .btn-block {

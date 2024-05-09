@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CategoriesSeeder extends Seeder
 {
@@ -14,7 +13,6 @@ class CategoriesSeeder extends Seeder
     public function run()
     {
         Category::insert([
-        // DB::table('categories')->insert([
             ['species' => 'Akcja'],
             ['species' => 'Komedia'],
             ['species' => 'Dramat'],

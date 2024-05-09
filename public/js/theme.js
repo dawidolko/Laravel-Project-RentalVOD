@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const themeIcon = document.getElementById("theme-icon");
     const body = document.body;
 
-    // Ustawienie domyślnego trybu ciemnego
     body.setAttribute("data-bs-theme", "dark");
     themeIcon.classList.add("bi-moon-stars");
 
@@ -28,13 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
     searchToggle.addEventListener("click", function () {
         if (searchInput.style.display === "none") {
             searchInput.style.display = "block";
-            searchSubmit.style.display = "block"; // Pokaż przycisk wyszukiwania
+            searchSubmit.style.display = "block";
         } else {
             if (searchInput.value.trim() !== "") {
-                searchSubmit.click(); // Wyślij zapytanie, jeśli pole nie jest puste
+                searchSubmit.click();
             }
             searchInput.style.display = "none";
-            searchSubmit.style.display = "none"; // Ukryj przycisk wyszukiwania
+            searchSubmit.style.display = "none";
         }
     });
 });

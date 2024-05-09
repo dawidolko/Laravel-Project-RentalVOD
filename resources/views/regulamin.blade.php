@@ -10,7 +10,8 @@
     </style>
   </head>
   <body>
-    @include('layouts.navbar', ['categories' => $categories])
+    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
+    @include('layouts.navbar')
 
     <h1 class="text-white container mt-5">Regulamin</h1>
     <ol class="text-danger2 fw-bold container mt-5">
