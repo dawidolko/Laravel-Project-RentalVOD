@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{{ asset('css/movieStyle.css') }}" />
   </head>
   <body>
-    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
     @include('layouts.navbar')
 
     <div id="imageOverlay" class="image-overlay" style="display: none">
@@ -129,16 +128,15 @@
     <script defer src="{{ asset('js/magnification.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Przy załadowaniu strony sprawdź stan ulubionych i zaktualizuj ikony
             document.querySelectorAll('.heart.favoriting').forEach(button => {
                 const movieId = button.getAttribute('data-movie-id');
                 const icon = document.getElementById(`favorite-icon-${movieId}`);
                 if (localStorage.getItem(`favorite-${movieId}`) === 'true') {
-                    icon.name = 'heart';  // Zmieniamy na wypełnione serce
-                    icon.style.color = 'red';  // Zmieniamy kolor na czerwony
+                    icon.name = 'heart';  
+                    icon.style.color = 'red';  
                 } else {
-                    icon.name = 'heart-outline';  // Pusty kontur serca
-                    icon.style.color = '';  // Resetujemy kolor
+                    icon.name = 'heart-outline';  
+                    icon.style.color = '';  
                 }
             });
         });
@@ -147,16 +145,15 @@
             const icon = document.getElementById(`favorite-icon-${movieId}`);
             let isFavorite = localStorage.getItem(`favorite-${movieId}`) === 'true';
         
-            // Zmienia stan w localStorage i aktualizuje ikonę
             localStorage.setItem(`favorite-${movieId}`, !isFavorite);
-            isFavorite = !isFavorite;  // Odwracamy stan
+            isFavorite = !isFavorite;  
         
             if (isFavorite) {
-                icon.name = 'heart';  // Zmieniamy na wypełnione serce
-                icon.style.color = 'red';  // Zmieniamy kolor na czerwony
+                icon.name = 'heart'; 
+                icon.style.color = 'red';  
             } else {
-                icon.name = 'heart-outline';  // Pusty kontur serca
-                icon.style.color = '';  // Resetujemy kolor
+                icon.name = 'heart-outline';  
+                icon.style.color = '';  
             }
         }
         </script>

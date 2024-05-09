@@ -18,7 +18,7 @@
         .custom-btn {
             background-color: gray;
             color: black;
-            border: none;  /* Usuwa domyślną ramkę przycisku */
+            border: none; 
         }
         .custom-btn:hover {
             background-color: darkred;
@@ -83,7 +83,6 @@
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
         
-                // Prosta walidacja e-mail
                 if (!email.value.includes('@') || !email.value.includes('.')) {
                     valid = false;
                     email.classList.add('is-invalid');
@@ -91,7 +90,6 @@
                     email.classList.remove('is-invalid');
                 }
         
-                // Prosta walidacja hasła
                 if (password.value.length < 8) {
                     valid = false;
                     password.classList.add('is-invalid');

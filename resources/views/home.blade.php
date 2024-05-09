@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
   </head>
   <body>
-    {{-- @include('layouts.navbar', ['categories' => $categories]) --}}
     @include('layouts.navbar')
 
     <div id="carouselExampleInterval" class="carousel slide p-1" data-bs-ride="carousel">

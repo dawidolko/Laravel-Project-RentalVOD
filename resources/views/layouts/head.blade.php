@@ -1,5 +1,5 @@
 <head>
-    <link rel="icon" href="storage/img/logo.webp">
+    <link rel="icon" href="{{ asset('storage/img/logo.webp') }}" type="image/webp">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $pageTitle }}</title>

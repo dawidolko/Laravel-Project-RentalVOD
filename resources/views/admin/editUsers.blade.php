@@ -84,6 +84,7 @@
         </div>
         @endif
         <h1>Wszyscy klienci</h1>
+        <div class="table-responsive"> 
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -100,7 +101,7 @@
             <tbody>
                 @foreach($users as $user)
                 <tr>
-                    <!-- Dane użytkownika -->
+    
                     <td>{{ $user->id }}</td>
                     <td><img src="{{ asset($user->avatar) }}" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%;"></td>
                     <td>{{ $user->first_name }}</td>
@@ -109,9 +110,9 @@
                     <td>{{ $user->city }}, {{ $user->address }}</td>
                     <td>{{ str_repeat('*', 5) }}</td>
                     <td style="display: flex;">
-                        <!-- Przycisk otwierający panel edycji -->
+            
                         <a href="#" class="btn btn-secondary" onclick="toggleEditPanel('{{ $user->id }}')">Edytuj</a>
-                        <!-- Przycisk usuwania -->
+            
                         <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST" style="display: inline-block;">
                             @csrf
                             @method('DELETE')
@@ -120,7 +121,7 @@
                     </td>
                 </tr>
                 <tr id="edit-panel-{{ $user->id }}" style="display: none;">
-                    <!-- Panel edycji -->
+    
                     <td colspan="8">
                         <form action="{{ route('admin.updateUser', ['id' => $user->id]) }}" method="POST">
                             @csrf
@@ -156,6 +157,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
                 {{ $users->links('pagination::bootstrap-4') }} 

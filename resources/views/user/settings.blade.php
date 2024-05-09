@@ -3,11 +3,16 @@
 @include('layouts.head', ['pageTitle' => 'RentalVOD - Ustawienia konta'])
 <head>
     <style>
-        .marginbig {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100vh;
+        body, html {
+            height: 100%; /* Ensures the full height is available to flex items */
+            margin: 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            position: relative; /* Normal positioning, change to 'absolute' if needed */
+            width: 100%;
+            clear: both;
         }
         .custom-btn {
             background-color: gray;
@@ -18,8 +23,14 @@
             background-color: darkred;
             color: white;
         }
+        .container {
+            min-height: 100%; /* Ensures container can stretch with content */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Aligns content to the top */
+        }
         .full-height {
-            min-height: 87vh;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -27,9 +38,6 @@
         .text-large {
             font-size: 1.5em;
             text-align: center;
-        }
-        .footer {
-            margin-top: auto;
         }
     </style>
 </head>

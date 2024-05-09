@@ -5,23 +5,22 @@
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Resetowanie wszystkich potencjalnych konfliktów z paginacją */
         html, body {
-            height: 100%; /* Ustawienie wysokości strony na 100% */
+            height: 100%; 
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column; /* Ustawienie kierunku flex na pionowy */
+            flex-direction: column; 
         }
 
         .container {
-            flex: 1; /* Sprawia, że kontener z treścią rozciąga się, aby zająć dostępną przestrzeń */
+            flex: 1; 
             display: flex;
-            flex-direction: column; /* W razie potrzeby */
+            flex-direction: column; 
         }
 
         .footer {
-            margin-top: auto; /* Automatycznie przesuwa stopkę na dół */
+            margin-top: auto; 
         }
 
 
@@ -33,7 +32,8 @@
 
 <div class="container mt-4">
     <h1>Wszystkie zamówienia</h1>
-    <table class="table table-hover">
+    <div class="table-responsive"> 
+    <table class="table table-hover ">
         <thead>
             <tr>
                 <th>Zdjęcie</th>
@@ -61,6 +61,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
                 {{ $loans->links('pagination::bootstrap-4') }}
@@ -68,7 +69,7 @@
         </div> 
         <div class="container mt-4">
             <h1>Wykres cen zamówień</h1>
-            <canvas id="priceHistogram" width="400" height="400"></canvas> <!-- Tutaj dodajemy canvas -->
+            <canvas id="priceHistogram" width="400" height="400"></canvas> 
             <table class="table table-hover">
                 ...
             </table>
@@ -83,12 +84,12 @@
     
         const ctx = document.getElementById('priceHistogram').getContext('2d');
         const priceHistogram = new Chart(ctx, {
-            type: 'bar', // Wybór typu wykresu na bar (histogram)
+            type: 'bar',
             data: {
-                labels: prices, // Tutaj możesz potrzebować generować zakresy cen jeśli są zbyt wiele unikalnych wartości
+                labels: prices, 
                 datasets: [{
                     label: 'Rozkład cen zamówień',
-                    data: prices, // Dane, które będą wyświetlane
+                    data: prices, 
                     backgroundColor: 'rgba(75, 192, 192, 0.5)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -103,7 +104,7 @@
             }
         });
     });
-    </script>
+</script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 

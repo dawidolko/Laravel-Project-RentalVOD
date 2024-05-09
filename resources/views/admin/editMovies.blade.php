@@ -25,7 +25,6 @@
     @include('layouts.navbar')
 
     <div class="container mt-5">
-        {{-- Alert dla sukcesu --}}
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -33,7 +32,6 @@
         </div>
         @endif
 
-        {{-- Alert dla błędów --}}
         @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -50,7 +48,6 @@
             <a href="#" class="btn btn-secondary custom-btn" onclick="toggleAddPanel(event, 'category')">Dodaj kategorię</a>
         </div>
 
-        {{-- Formularz dodawania filmu --}}
         <li id="add-panel-movie" class="list-group-item edit-panel" style="display: none;">
             <form action="{{ route('admin.addMovie') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -81,7 +78,6 @@
                 <div class="form-group">
                     <label for="duration">Czas Filmu</label>
                     <input type="text" class="form-control" id="duration" name="duration" pattern="[0-9]*" title="Czas filmu musi być liczbą" required>
-                    <!-- Dodaj komunikat o błędzie -->
                     @error('duration')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -114,8 +110,6 @@
             </form>
         </li>
 
-
-        {{-- Formularz dodawania kategorii --}}
         <li id="add-panel-category" class="list-group-item edit-panel" style="display: none;">
             <form action="{{ route('admin.addCategory') }}" method="POST">
                 @csrf
@@ -127,8 +121,7 @@
             </form>
         </li>
 
-
-        {{-- Tabela z listą filmów --}}
+        <div class="table-responsive"> 
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -184,10 +177,6 @@
                                 <label for="description">Opis</label>
                                 <textarea class="form-control" id="description" name="description" required>{{ $movie->description }}</textarea>
                             </div>
-                            {{-- <div class="form-group">
-                                <label for="category_id">ID Kategorii</label>
-                                <input type="number" class="form-control" id="category_id" name="category_id" value="{{ $movie->category_id }}" required>
-                            </div> --}}
                             <div class="form-group">
                                 <label for="category_name">Nazwa Kategorii</label>
                                 <select class="form-control" id="category_name" name="category_id" required>
@@ -236,7 +225,6 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <!-- Dodaj pozostałe pola edycji tutaj -->
                             <button type="submit" class="btn btn-secondary custom-btn m-2">Zapisz</button>
                             <button type="button" class="btn btn-secondary custom-btn m-2" onclick="closeEditPanel({{ $movie->id }})">Anuluj</button>
                         </form>
@@ -245,6 +233,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
                 {{ $movies->links('pagination::bootstrap-4') }}
