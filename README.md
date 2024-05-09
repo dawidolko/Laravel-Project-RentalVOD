@@ -32,7 +32,7 @@ Welcome to the VOD Platform Project, a Laravel-based solution designed for strea
 - **Responsive Design**: Ensuring a great user experience across various devices and screen sizes.
 
 ## Technologies
-- **Laravel 9.x**: The latest version of the Laravel framework, providing a robust foundation for web application development.
+- **Laravel 11.x**: The latest version of the Laravel framework, providing a robust foundation for web application development.
 - **MySQL/MariaDB**: For secure and reliable data storage.
 - **Stripe**: For secure handling of online transactions and payment processing.
 - **Bootstrap 5**: For designing a responsive and mobile-first user interface.
