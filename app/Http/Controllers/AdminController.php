@@ -145,7 +145,6 @@ class AdminController extends Controller
                 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
             ],
             'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
         ]);
     
         $user = User::findOrFail($id);

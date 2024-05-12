@@ -8,6 +8,8 @@ use DateTime;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\StatusLoan;
+
 
 class UsersController extends Controller
 {
@@ -26,7 +28,7 @@ class UsersController extends Controller
         }])->findOrFail($movie_id);
     
         $userHasAccess = $movie->loans->contains(function ($loan) {
-            return $loan->status !== 'zwrócone';
+            return $loan->status !== StatusLoan::ZWROCONE;
         });
     
         if ($userHasAccess) {
@@ -51,18 +53,14 @@ class UsersController extends Controller
     {
         $request->validate([
             'address' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s,.-]+$/',
-            'city' => 'required|string|max:255|regex:/^[a-zA-Z\s-]+$/'
         ], [
             'address.required' => 'Adres jest wymagany.',
             'address.regex' => 'Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-',
-            'city.required' => 'Nazwa miasta jest wymagana.',
-            'city.regex' => 'Nazwa miasta może zawierać tylko litery i spacje.'
         ]);
     
         $user = Auth::user();
         if ($user) {
             $user->address = $request->address;
-            $user->city = $request->city;
             $user->save();
             return back()->with('success', 'Dane zostały zaktualizowane.');
         }
@@ -170,7 +168,7 @@ class UsersController extends Controller
             $loan->end = $endDate->format('Y-m-d');
             $diff = $endDate->diff($startDate)->days + 1;
             $loan->price = $details['price'] * $diff;
-            $loan->status = 'wynajem';
+            $loan->status = StatusLoan::WYNAJEM;
             $loan->save();
     
             $loan->movies()->attach($id);
@@ -179,6 +177,7 @@ class UsersController extends Controller
         session()->forget('cart');
         return redirect()->route('user.profile')->with('success', 'Zakup udany. Produkty zostały dodane do Twojej historii wypożyczeń.');
     }    
+
     public function updateCart(Request $request, $movie_id)
     {
         $cart = session()->get('cart', []);

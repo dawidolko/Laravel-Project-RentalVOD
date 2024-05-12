@@ -27,6 +27,8 @@ composer install
 
 composer require stripe/stripe-php
 
+composer require bensampo/laravel-enum
+
 php artisan key:generate
 
 php artisan storage:link

@@ -83,10 +83,6 @@
                         <label for="address" class="form-label">Ulica</label>
                         <input id="address" name="address" type="text" class="form-control" value="{{ Auth::user()->address }}" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="city" class="form-label">Miasto</label>
-                        <input id="city" name="city" type="text" class="form-control" value="{{ Auth::user()->city }}" required>
-                    </div>
                     <div class="text-center mb-3">
                         <button type="submit" class="btn custom-btn">Zapisz zmiany adresu</button>
                     </div>
@@ -149,19 +145,12 @@
         const settingsForm = document.querySelector('.needs-validation');
         settingsForm.addEventListener('submit', function (event) {
             const address = document.getElementById('address');
-            const city = document.getElementById('city');
             let valid = true;
     
             // Walidacja adresu
             if (!address.value.match(/^[a-zA-Z0-9\s,.-]+$/)) {
                 valid = false;
                 alert('Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-');
-            }
-    
-            // Walidacja miasta
-            if (!city.value.match(/^[a-zA-Z\s-]+$/)) {
-                valid = false;
-                alert('Nazwa miasta może zawierać tylko litery i spacje.');
             }
     
             if (!valid) {

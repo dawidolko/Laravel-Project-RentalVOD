@@ -107,7 +107,7 @@
                     <td>{{ $user->first_name }}</td>
                     <td>{{ $user->last_name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->city }}, {{ $user->address }}</td>
+                    <td>{{ $user->address }}</td>
                     <td>{{ str_repeat('*', 5) }}</td>
                     <td style="display: flex;">
             
@@ -141,10 +141,6 @@
                             <div class="form-group">
                                 <label for="address-{{ $user->id }}">Adres</label>
                                 <input type="text" class="form-control" id="address-{{ $user->id }}" name="address" required value="{{ $user->address }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="city">Miasto</label>
-                                <input type="text" class="form-control" id="city" name="city" required value="{{ $user->city }}">
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="admin" name="admin" @if($user->isAdmin()) checked @endif>

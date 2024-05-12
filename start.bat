@@ -10,6 +10,8 @@ call composer install
 
 call composer require stripe/stripe-php
 
+call composer require bensampo/laravel-enum
+
 call php artisan key:generate
 
 call php artisan storage:link

@@ -66,7 +66,6 @@ class AuthController extends Controller
                 'regex:/[@$!%*#?&]/' 
             ],
             'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100'
         ], [
             'first_name.required' => 'Imię jest wymagane.',
             'last_name.required' => 'Nazwisko jest wymagane.',
@@ -78,7 +77,6 @@ class AuthController extends Controller
             'password.min' => 'Hasło musi zawierać co najmniej 8 znaków.',
             'password.regex' => 'Hasło musi zawierać małe i duże litery, cyfry oraz znak specjalny.',
             'address.required' => 'Adres jest wymagany.',
-            'city.required' => 'Miasto jest wymagane.'
         ]);
     
         $user = User::create([
@@ -87,7 +85,6 @@ class AuthController extends Controller
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
             'address' => $validatedData['address'],
-            'city' => $validatedData['city'],
             'role_id' => 2 // Przypisuje nowym użytkownikom rolę klienta, ponieważ rola nr.1 to admin.
         ]);
     

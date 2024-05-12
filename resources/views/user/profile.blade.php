@@ -57,7 +57,7 @@
                 <div class="flex-grow-1 mb-3 mb-md-0">
                     <h1>{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h1>
                     <p><strong>Email:</strong> {{ Auth::user()->email }}</p>
-                    <p><strong>Adres:</strong> {{ Auth::user()->address }}, {{ Auth::user()->city }}</p>
+                    <p><strong>Adres:</strong> {{ Auth::user()->address }}</p>
                     <div>
                         <a href="{{ route('settings') }}" class="btn custom-btn btn-test">Edytuj dane</a>
                         <a href="{{ route('cart.show') }}" class="btn custom-btn btn-test">Koszyk</a>

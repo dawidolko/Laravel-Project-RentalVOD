@@ -68,13 +68,6 @@
                         @enderror
                     </div>
                     <div class="form-group mb-2">
-                        <label for="city" class="form-label">Miasto</label>
-                        <input id="city" name="city" type="text" class="form-control @error('city') is-invalid @enderror" required>
-                        @error('city')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-2">
                         <label for="password" class="form-label">Hasło</label>
                         <input id="password" name="password" type="password" class="form-control @error('password') is-invalid @enderror" required>
                         @error('password')
