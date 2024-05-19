@@ -1,5 +1,6 @@
 @include('layouts.html')
-@include('layouts.head', ['pageTitle' => 'RentalVOD - Admin Movies'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - admin movies'])
+
 <head>
     <style>
         html, body {
@@ -18,6 +19,45 @@
 
         .footer {
             margin-top: auto;
+        }
+
+        .container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .list-group-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+        .user-info > span {
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+        .button-group a {
+            margin-right: 10px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .btn-secondary{
+            margin-right: 10px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
@@ -38,6 +78,7 @@
                 @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
                 @endforeach
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </ul>
         </div>
         @endif
@@ -122,7 +163,7 @@
         </li>
 
         <div class="table-responsive"> 
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <th style="text-align: center">ID</th>
@@ -251,23 +292,13 @@
         function closeEditPanel(movieId) {
             document.getElementById('edit-panel-' + movieId).style.display = 'none';
         }
-    </script>
-    <script>
+
         function toggleAddPanel(event, type) {
             event.preventDefault();
             let panel = type === 'movie' ? 'add-panel-movie' : 'add-panel-category';
             let display = document.getElementById(panel).style.display;
             document.getElementById(panel).style.display = display === 'none' ? 'block' : 'none';
         }
-    
-        function openEditPanel(movieId) {
-            document.getElementById('edit-panel-' + movieId).style.display = 'table-row';
-        }
-    
-        function closeEditPanel(movieId) {
-            document.getElementById('edit-panel-' + movieId).style.display = 'none';
-        }
     </script>
-    
 </body>
 </html>

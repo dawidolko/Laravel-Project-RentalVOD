@@ -7,11 +7,6 @@ use App\Models\Movies;
 
 class LoansMoviesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         $loanMovies = [

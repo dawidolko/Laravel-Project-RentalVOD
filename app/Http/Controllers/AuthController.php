@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Http\Requests\AuthenticateRequest;
+use App\Http\Requests\RegisterRequest;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -17,13 +19,9 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-
-    public function authenticate(Request $request) 
+    public function authenticate(AuthenticateRequest $request) 
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
-        ]);
+        $credentials = $request->validated();
 
         $remember = $request->has('remember'); 
 
@@ -33,9 +31,7 @@ class AuthController extends Controller
         } else {
             return back()->withErrors(['email' => 'Nieprawidłowe dane logowania.'])->onlyInput('email');
         }
-        
     }
-
 
     public function logout(Request $request)
     {
@@ -50,35 +46,10 @@ class AuthController extends Controller
         return view('auth.register');
     }
     
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:100|alpha',
-            'last_name' => 'required|string|max:100|alpha',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => [
-                'required',
-                'confirmed',
-                'min:8',
-                'regex:/[a-z]/',
-                'regex:/[A-Z]/', 
-                'regex:/[0-9]/',
-                'regex:/[@$!%*#?&]/' 
-            ],
-            'address' => 'required|string|max:255',
-        ], [
-            'first_name.required' => 'Imię jest wymagane.',
-            'last_name.required' => 'Nazwisko jest wymagane.',
-            'email.required' => 'Adres email jest wymagany.',
-            'email.email' => 'Proszę podać prawidłowy adres email.',
-            'email.unique' => 'Podany adres email jest już używany.',
-            'password.required' => 'Hasło jest wymagane.',
-            'password.confirmed' => 'Hasła nie są identyczne.',
-            'password.min' => 'Hasło musi zawierać co najmniej 8 znaków.',
-            'password.regex' => 'Hasło musi zawierać małe i duże litery, cyfry oraz znak specjalny.',
-            'address.required' => 'Adres jest wymagany.',
-        ]);
-    
+        $validatedData = $request->validated();
+
         $user = User::create([
             'first_name' => $validatedData['first_name'],
             'last_name' => $validatedData['last_name'],

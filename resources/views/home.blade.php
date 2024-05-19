@@ -73,51 +73,56 @@
         <div class="product-main">
           <h2 class="title">Wypożycz już dziś</h2>
   
-              <div class="product-grid">
-                @if ($movies->isEmpty())
-                <div class="alert alert-danger" role="alert">
-                    BRAK FILMÓW
+          <div class="product-grid">
+            @if ($movies->isEmpty())
+            <div class="alert alert-danger" role="alert">
+              BRAK FILMÓW
+            </div>
+            @else
+            @foreach ($movies as $movie)
+            <div class="showcase">
+              <div class="showcase-banner">
+                <div class="image-container">
+                  <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img default" />
+                  <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img hover" />
                 </div>
-                @else
-                    @foreach ($movies as $movie)
-                      <div class="showcase">
-                          <div class="showcase-banner">
-                            <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" width="300" class="product-img hover" />
-                            <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" width="300" class="product-img default" />
-                    
-                              <div class="showcase-actions">
-                          
-                                <button class="btn-action magnification">
-                                    <ion-icon name="eye-outline"></ion-icon>
-                                </button>
-                    
-                                <button class="btn-action bag-add">
-                                  <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
-                                    <ion-icon name="bag-add-outline"></ion-icon>
-                                  </a>
-                                </button>
-                              </div>
-                          </div>
-      
-                          <div class="showcase-content">
-                            <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="showcase-category card-title text-danger2">{{ $movie->category->species }}</a>
-                        
-                            <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
-                                <h3 class="showcase-title">{{ $movie->title }}</h3>
-                            </a>
-                            <ul class="list-group list-group-flush bg-secondary" style="text-align: center;">
-                                <li class="list-group-item bg-dark2">Reżyser: <b>{{ $movie->director }}</b></li>
-                                <li class="list-group-item bg-dark3">Rok premiery: <b>{{ $movie->release_year }}</b></li>
-                                <li class="list-group-item bg-dark3">Ocena: <b>{{ $movie->rate }}</b></li>
-                            </ul>
-                            <div class="card-body">
-                                <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="w-100 h-100 btn btn-block custom-btn"><b>Przejdź do filmu</b></a>
-                            </div>
-                          </div>
-                      </div>
-                      @endforeach
-                      @endif    
+                <div class="showcase-actions">
+                  <button class="btn-action magnification">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+                  <button class="btn-action bag-add">
+                    <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
+                      <ion-icon name="bag-add-outline"></ion-icon>
+                    </a>
+                  </button>
+                </div>
               </div>
+              <div class="showcase-content">
+                <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="showcase-category card-title text-danger2">{{ $movie->category->species }}</a>
+                <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
+                  <h3 class="showcase-title">{{ $movie->title }}</h3>
+                </a>
+                <ul class="list-group list-group-flush bg-secondary" style="text-align: center;">
+                  <li class="list-group-item bg-dark2">Reżyser: <b>{{ $movie->director }}</b></li>
+                  <li class="list-group-item bg-dark3">Rok premiery: <b>{{ $movie->release_year }}</b></li>
+                  <li class="list-group-item bg-dark3">Ocena: <b>{{ $movie->rate }}</b></li>
+                </ul>
+                <div class="card-footer text-center" style="background-color: rgba(139, 0, 0, 0.8); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                    @if($movie->old_price && $movie->old_price != $movie->price_day)
+                        <h5 class="card-title"><del>{{ $movie->old_price }} zł</del> {{ $movie->price_day }} zł</h5>
+                    @else
+                        <h5 class="card-title">{{ $movie->price_day }} zł</h5>
+                    @endif
+                </div>
+                <div class="card-body">
+                  <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="w-100 h-100 btn btn-block custom-btn"><b>Przejdź do filmu</b></a>
+                </div>
+              </div>
+            </div>
+            @endforeach
+            @endif
+          </div>
+          
           </div>
         </div>
 

@@ -24,7 +24,7 @@ call php artisan migrate:fresh --seed
 
 call composer require --dev barryvdh/laravel-ide-helper
 
-call  php artisan ide-helper:generate
+call php artisan ide-helper:generate
 
 call php artisan serve
 

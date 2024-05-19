@@ -1,11 +1,11 @@
 /*-----------------------------------*\
-  #style.css
+  #moviesStyle.css
 \*-----------------------------------*/
 
 :root {
     /**
        * colors
-       */
+    */
 
     --spanish-gray: hsl(0, 0%, 60%);
     --sonic-silver: hsl(0, 0%, 47%);
@@ -21,7 +21,7 @@
 
     /**
        * typography
-       */
+    */
 
     --fs-1: 1.563rem;
     --fs-2: 1.375rem;
@@ -61,7 +61,7 @@ a {
 
 /*-----------------------------------*\
     #PRODUCT GRID
-  \*-----------------------------------*/
+\*-----------------------------------*/
 
 .product-grid {
     -ms-grid-columns: 1fr 30px 1fr 30px 1fr 30px 1fr;
@@ -129,6 +129,14 @@ a {
 
 .product-grid .showcase-banner {
     position: relative;
+    overflow: hidden;
+}
+
+.product-grid .image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid var(--cultured);
 }
 
 .product-grid .product-img {
@@ -136,9 +144,7 @@ a {
     height: 100%;
     -o-object-fit: cover;
     object-fit: cover;
-    -webkit-transition: var(--transition-timing);
-    -o-transition: var(--transition-timing);
-    transition: var(--transition-timing);
+    transition: transform 0.2s ease;
 }
 
 .product-grid .product-img.default {
@@ -156,6 +162,7 @@ a {
 
 .product-grid .showcase:hover .product-img.hover {
     opacity: 1;
+    transform: scale(1.1);
 }
 
 .product-grid .showcase:hover .product-img.default {
@@ -359,7 +366,7 @@ a {
 @media (min-width: 780px) {
     /**
        * #PRODCUT GRID
-       */
+    */
     .product-grid {
         -ms-grid-columns: 1fr 30px 1fr 30px 1fr;
         grid-template-columns: 1fr 1fr 1fr;

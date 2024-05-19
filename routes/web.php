@@ -41,7 +41,10 @@ Route::middleware([ShareDataToViews::class])->group(function () {
         Route::get('/movies/image/{id}', [MoviesController::class, 'image'])->name('movies.image');
         Route::post('/opinions', [OpinionController::class, 'store'])->name('opinions.store');
         Route::get('/loans/{movie}', [UsersController::class, 'showMovie'])->name('loans.show');
+        Route::post('/movies/{movie}/upgrade', [UsersController::class, 'upgradeToPremium'])->name('user.upgradeToPremium');
+        Route::get('/loans/premium/{movie_id}', [UsersController::class, 'showPremiumMovie'])->name('loans.premium');
     });
+
     Route::middleware(['auth', IsAdmin::class])->group(function () {
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
         Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');

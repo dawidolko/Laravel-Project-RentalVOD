@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MovieService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +12,7 @@ class Movie extends Model
     protected $table = 'movies';
 
     protected $fillable = [
-        'id', 'title', 'description', 'category_id', 'director', 'release', 'longTime', 'rate', 'img_path', 'pricePerDay', 'available'
+        'id', 'title', 'description', 'category_id', 'director', 'release_year', 'duration', 'rate', 'img_path', 'video_path', 'price_day', 'old_price', 'available' 
     ];
 
     public function category()

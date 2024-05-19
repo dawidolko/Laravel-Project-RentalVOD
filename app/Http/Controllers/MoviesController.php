@@ -3,28 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\PremiumMovie;
+use App\Services\MovieService;
+use Auth;
 use File;
 use Illuminate\Http\Request;
 use Response;
 
 class MoviesController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    protected $movieService;
 
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function __construct(MovieService $movieService)
+    {
+        $this->movieService = $movieService;
+    }
+    
     public function index(Request $request)
     { 
-        $movies = Movie::with('category')->get();
-
         $query = Movie::with('category');
 
         if ($request->has('species') && $request->species != '') {
@@ -60,14 +56,26 @@ class MoviesController extends Controller
 
         $movies = $query->paginate(6);
 
+        foreach ($movies as $movie) {
+            $promoPrice = $this->movieService->calculateDynamicPrice($movie);
+            $movie->old_price = $promoPrice;
+            $movie->save();
+        }
+
         return view('movies.index', compact('movies'));  
     }
 
     public function show($id)
     {
         $movie = Movie::with(['category', 'opinions.user'])->where('id', $id)->firstOrFail();
-        return view('movies.show', compact('movie'));   
+        $promoPrice = $this->movieService->calculateDynamicPrice($movie);
+
+        $movie->old_price = $promoPrice;
+        $movie->save();
+
+        return view('movies.show', compact('movie', 'promoPrice'));
     }
+    
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -87,7 +95,7 @@ class MoviesController extends Controller
     public function image($id)
     {
         $movie = Movie::findOrFail($id);
-        $path = storage_path('app/public/storage/' . $movie->img_path);
+        $path = storage_path('app/public/' . $movie->img_path);
         if (!File::exists($path)) {
             abort(404);
         }

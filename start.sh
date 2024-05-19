@@ -39,6 +39,10 @@ php artisan storage:link
 
 php artisan migrate:fresh --seed
 
+composer require --dev barryvdh/laravel-ide-helper
+
+php artisan ide-helper:generate
+
 php artisan serve
 
 code .

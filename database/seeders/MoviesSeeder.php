@@ -7,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class MoviesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         Movie::insert([

@@ -1,6 +1,6 @@
 @include('layouts.html')
 
-@include('layouts.head', ['pageTitle' => 'RentalVOD - Logowanie'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - logowanie'])
 <head>
     <style>
         .marginbig {
@@ -30,7 +30,6 @@
 @include('layouts.navbar')
 
 <div class="container mt-5 mb-5 marginbig">
-    @include('layouts.session-error')
 
     <div class="row mt-4 mb-4 text-center">
         <div class="col-12">
@@ -38,8 +37,24 @@
             <h1>Zaloguj się</h1>
         </div>
     </div>
+    
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
-    @include('layouts.validation-error')
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </ul>
+    </div>
+    @endif
 
     <div class="row d-flex justify-content-center">
         <div class="col-10 col-sm-10 col-md-6 col-lg-4">

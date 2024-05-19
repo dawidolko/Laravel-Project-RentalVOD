@@ -1,9 +1,32 @@
 @include('layouts.html')
-@include('layouts.head', ['pageTitle' => 'RentalVOD - Koszyk'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - koszyk'])
 <head>
     <link rel="stylesheet" href="{{ asset('css/movieStyle.css') }}">
     <style>
-        .marginbig { display: flex; flex-direction: column; justify-content: center; height: 100vh; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .marginbig { display: flex; flex-direction: column; justify-content: center; }
         .custom-btn { background-color: gray; color: black; border: none; }
         .custom-btn:hover { background-color: darkred; color: white; }
         .full-height { min-height: 87vh; display: flex; flex-direction: column; justify-content: center; }
@@ -21,18 +44,34 @@
 @include('layouts.navbar')
 
 @if (Auth::check())
-    <div class="container mt-5 marginbig">
+    @php
+        $user = Auth::user();
+        $loyaltyPoints = $user->loyaltyPoints->points ?? 0;
+        $canRentForFree = $loyaltyPoints >= 50;
+    @endphp
+
+    <div class="container mt-5">
         <div class="row mt-4 mb-4 text-center" style="text-align: center;">
-            <div class="col-12" style="    display: flex;
-            flex-direction: column;
-            align-items: center;">
+            <div class="col-12" style="display: flex; flex-direction: column; align-items: center;">
                 <img src="{{ asset('storage/img/logo.webp') }}" alt="Logo" class="img-fluid" style="max-width: 150px; margin-bottom: 20px; border-radius: 50">
             </div>
         </div>
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @elseif (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </ul>
+        </div>
         @endif
 
         @php $total = 0; @endphp
@@ -41,7 +80,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <h2>Koszyk</h2>
-                <div class="table-responsive"> <!-- Dodanie klasy table-responsive -->
+                <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -94,29 +133,39 @@
                 </div>
                 <div class="text-right"><strong id="total-display">Razem: 0 zł</strong></div>
                 <div class="text-right" style="padding: 20px; display: flex; justify-content: center;">
-                    <button id="checkout-button" class="btn custom-btn" onclick="handleCheckout()">Przejdź do płatności</button>
-                </div>
-                <!-- Payment section -->
-                <div class="payment-section" id="payment-section" style="display: none;">
-                    <h3>Informacje o płatności</h3>
+                    @if ($canRentForFree)
+                        <div class="alert alert-info" role="alert">
+                            Masz wystarczająco punktów, aby wypożyczyć film za darmo! Przy płatności zostanie odjęte 50 punktów.
+                        </div>
                         <form action="{{ route('checkout') }}" method="post">
                             @csrf
-                            <input type="hidden" name="total" value="{{ $total }}">
-                            <div class="mb-3">
-                                <label for="cardNumber">Numer karty</label>
-                                <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}" class="form-control" placeholder="Numer karty (16 cyfr)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="cvv">CVV</label>
-                                <input type="text" id="cvv" name="cvv" required pattern="\d{3}" class="form-control" placeholder="CVV (3 cyfry)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="expiryDate">Data ważności</label>
-                                <input type="month" id="expiryDate" name="expiryDate" required class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Zapłać</button>
-                        </form>                                      
-                    </div>
+                            <input type="hidden" name="usePoints" value="1">
+                            <button type="submit" class="btn custom-btn">Wypożycz za darmo</button>
+                        </form>
+                    @else
+                        <button id="checkout-button" class="btn custom-btn" onclick="handleCheckout()">Przejdź do płatności</button>
+                    @endif
+                </div>
+                <!-- Payment section -->
+                <div class="payment-section" id="payment-section" style="display: none; margin-bottom: 150px;">
+                    <h3>Informacje o płatności</h3>
+                    <form action="{{ route('checkout') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="total" value="{{ $total }}">
+                        <div class="mb-3">
+                            <label for="cardNumber">Numer karty</label>
+                            <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}" class="form-control" placeholder="Numer karty (16 cyfr)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" name="cvv" required pattern="\d{3}" class="form-control" placeholder="CVV (3 cyfry)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expiryDate">Data ważności</label>
+                            <input type="month" id="expiryDate" name="expiryDate" required class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Zapłać</button>
+                    </form>                                      
                 </div>
             </div>
             @else
@@ -133,6 +182,7 @@
             </div>
         </div>
     @endif
+    </div>
 
     @include('layouts.footer', ['fixedBottom' => false])
     <script>
@@ -153,7 +203,7 @@
                     const startDateInput = row.querySelector('input[name="start"]');
                     const endDateInput = row.querySelector('input[name="end"]');
                     if (startDateInput && startDateInput.value) {
-                        endDateInput.min = startDateInput.value; // Ustawienie minimalnej daty dla 'end'
+                        endDateInput.min = startDateInput.value;
                         let maxDate = new Date(startDateInput.value);
                         maxDate.setDate(maxDate.getDate() + 13);
                         endDateInput.max = maxDate.toISOString().split('T')[0];
@@ -201,13 +251,9 @@
                 return Array.from(document.querySelectorAll('.date-input')).every(input => input.value !== '');
             }
         
-            // Dodanie walidacji dla daty ważności karty
             const expiryDateInput = document.getElementById('expiryDate');
             expiryDateInput.min = new Date().toISOString().slice(0, 7);
         });
-        </script>
-        
-
     </script>
-    </body>
-    </html>
+</body>
+</html>

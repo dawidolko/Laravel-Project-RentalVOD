@@ -1,16 +1,16 @@
 @include('layouts.html')
 
-@include('layouts.head', ['pageTitle' => 'RentalVOD - Ustawienia konta'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - ustawienia konta'])
 <head>
     <style>
         body, html {
-            height: 100%; /* Ensures the full height is available to flex items */
+            height: 100%;
             margin: 0;
         }
         .footer {
             background-color: #f8f9fa;
             text-align: center;
-            position: relative; /* Normal positioning, change to 'absolute' if needed */
+            position: relative;
             width: 100%;
             clear: both;
         }
@@ -24,10 +24,10 @@
             color: white;
         }
         .container {
-            min-height: 100%; /* Ensures container can stretch with content */
+            min-height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Aligns content to the top */
+            justify-content: flex-start;
         }
         .full-height {
             flex-grow: 1;
@@ -45,7 +45,7 @@
 <body>
 @include('layouts.navbar')
 
-@if (Auth::check())  {{-- Sprawdza, czy użytkownik jest zalogowany --}}
+@if (Auth::check())
 <div class="container mt-5 mb-5 marginbig">
     @include('layouts.session-error')
 
@@ -56,25 +56,27 @@
         </div>
     </div>
 
-    {{-- Sekcja zmiany adresu i miasta --}}
     <div class="container mt-5 mb-5">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </ul>
+        </div>
+        @endif
+        
         <div class="row d-flex justify-content-center">
             <div class="col-md-6">
-                {{-- Komunikaty o sukcesie --}}
-                @if (session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-    
-                {{-- Komunikaty o błędach --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
-                        @endforeach
-                    </div>
-                @endif
     
                 <form method="POST" action="{{ route('user.update') }}" class="needs-validation" novalidate>
                     @csrf
@@ -104,7 +106,6 @@
     </div>
     
 
-    {{-- Sekcja zmiany hasła --}}
     <div class="container mt-5 mb-5">
         <div class="row d-flex justify-content-center">
             <div class="col-md-6">
@@ -147,7 +148,6 @@
             const address = document.getElementById('address');
             let valid = true;
     
-            // Walidacja adresu
             if (!address.value.match(/^[a-zA-Z0-9\s,.-]+$/)) {
                 valid = false;
                 alert('Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-');

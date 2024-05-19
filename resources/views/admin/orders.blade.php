@@ -1,5 +1,5 @@
 @include('layouts.html')
-@include('layouts.head', ['pageTitle' => 'RentalVOD - Admin Orders'])
+@include('layouts.head', ['pageTitle' => 'RentalVOD - admin orders'])
 
 <head>
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
@@ -23,17 +23,32 @@
             margin-top: auto; 
         }
 
+        .chart-container {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            height: 400px;
+            margin: auto;
+        }
 
-        </style>              
+        .table-striped tbody tr:nth-of-type(odd) {
+            --bs-table-bg: var(--bs-table-striped-bg);
+            background-color: var(--bs-table-striped-bg);
+        }
+    </style>
 </head>
 
 <body>
 @include('layouts.navbar')
 
 <div class="container mt-4">
-    <h1>Wszystkie zamówienia</h1>
+    <div class="chart-container">
+        <h1 class="text-center">Wykres cen zamówień</h1>
+        <canvas id="priceHistogram"></canvas> 
+    </div>
+    <h1 class="mt-4">Wszystkie zamówienia</h1>
     <div class="table-responsive"> 
-    <table class="table table-hover ">
+    <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th>Zdjęcie</th>
@@ -62,51 +77,65 @@
         </tbody>
     </table>
     </div>
-        <div class="row">
-            <div class="col-12 d-flex justify-content-center">
-                {{ $loans->links('pagination::bootstrap-4') }}
-            </div>
-        </div> 
-        <div class="container mt-4">
-            <h1>Wykres cen zamówień</h1>
-            <canvas id="priceHistogram" width="400" height="400"></canvas> 
-            <table class="table table-hover">
-                ...
-            </table>
-            ...
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            {{ $loans->links('pagination::bootstrap-4') }}
         </div>
-        
+    </div> 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const prices = @json($loans->getCollection()->pluck('price')->toArray());
-    
+
         const ctx = document.getElementById('priceHistogram').getContext('2d');
         const priceHistogram = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: prices, 
+                labels: prices.map((price, index) => `Zamówienie ${index + 1}`), 
                 datasets: [{
                     label: 'Rozkład cen zamówień',
                     data: prices, 
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cena (PLN)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Zamówienia'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.raw} PLN`;
+                            }
+                        }
                     }
                 }
             }
         });
     });
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 
 <script>
     function showForm(id) {
