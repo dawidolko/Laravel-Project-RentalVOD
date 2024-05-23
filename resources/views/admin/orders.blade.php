@@ -43,7 +43,7 @@
 
 <div class="container mt-4">
     <div class="chart-container">
-        <h1 class="text-center">Wykres cen zamówień</h1>
+        <h3 class="text-center">Wykres ceny zamówienia na tle innych</h3>
         <canvas id="priceHistogram"></canvas> 
     </div>
     <h1 class="mt-4">Wszystkie zamówienia</h1>

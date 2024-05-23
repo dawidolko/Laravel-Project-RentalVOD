@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -16,12 +15,13 @@ return new class extends Migration
             $table->string('email', 255)->unique();
             $table->string('address', 255);
             $table->string('password', 255);
+            // Dodanie ograniczenia na datę urodzenia, użytkownik nie może mieć więcej niż 150 lat
+            $table->date('birth_date')->nullable()->check('birth_date > DATE_SUB(CURDATE(), INTERVAL 150 YEAR)');
         });
         
-
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index()->constrained('users')->onDelete('cascade');
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

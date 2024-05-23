@@ -7,7 +7,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 81vh;
+            height: 85vh;
         }
         .custom-btn {
             background-color: gray;
@@ -93,10 +93,14 @@
                         <label for="password_confirmation" class="form-label">Potwierdź hasło</label>
                         <input id="password_confirmation" name="password_confirmation" type="password" class="form-control" required>
                     </div>
+                    <div class="form-group mb-2">
+                        <label for="referral_code" class="form-label">Kod polecający (opcjonalnie)</label>
+                        <input id="referral_code" name="referral_code" type="text" class="form-control">
+                    </div>
                     <div class="text-center mt-4 mb-4">
                         <button class="btn custom-btn" type="submit">Zarejestruj</button>
                     </div>
-                </form>
+                </form>                                             
             </div>
         </div>
     </div>

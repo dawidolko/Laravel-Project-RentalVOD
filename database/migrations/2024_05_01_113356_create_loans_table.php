@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->date('start');
-            $table->date('end');
-            $table->decimal('price', 8, 2);
+            $table->date('end')->check('end > start');
+            $table->decimal('price', 8, 2)->unsigned();
             $table->string('status', 50);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -21,7 +21,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('rentals');
+        Schema::dropIfExists('loans');
     }
 };
-

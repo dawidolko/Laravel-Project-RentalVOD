@@ -16,6 +16,8 @@ class HomeController extends Controller
 
     public function index()
     {
+        $this->movieService->updatePrices(); // Wywołanie metody aktualizacji cen
+
         $movies = Movie::where('available', 'dostępny')
                        ->inRandomOrder()
                        ->limit(6)
@@ -23,12 +25,23 @@ class HomeController extends Controller
                        ->get();
 
         foreach ($movies as $movie) {
-            $promoPrice = $this->movieService->calculateDynamicPrice($movie);
-            $movie->old_price = $promoPrice;
-            $movie->save();
+            // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
+            $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
         }
 
-        return view('home', compact('movies'));  
+        $topMovies = Movie::select('movies.id', 'movies.title', 'movies.img_path', 'movies.available', 'movies.description', 'movies.category_id', 'movies.director', 'movies.release_year', 'movies.duration', 'movies.rate', 'movies.video_path', 'movies.price_day', \DB::raw('count(loan_movie.id) as loans_count'))
+            ->join('loan_movie', 'loan_movie.movie_id', '=', 'movies.id')
+            ->groupBy('movies.id', 'movies.title', 'movies.img_path', 'movies.available', 'movies.description', 'movies.category_id', 'movies.director', 'movies.release_year', 'movies.duration', 'movies.rate', 'movies.video_path', 'movies.price_day')
+            ->orderByDesc('loans_count')
+            ->limit(10)
+            ->get();
+
+        foreach ($topMovies as $movie) {
+            // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
+            $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
+        }
+
+        return view('home', compact('movies', 'topMovies', 'promoPrice'));  
     }
 
     public function regulamin()

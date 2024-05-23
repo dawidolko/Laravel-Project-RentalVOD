@@ -8,6 +8,7 @@ use App\Services\MovieService;
 use Auth;
 use File;
 use Illuminate\Http\Request;
+use Redirect;
 use Response;
 
 class MoviesController extends Controller
@@ -18,9 +19,11 @@ class MoviesController extends Controller
     {
         $this->movieService = $movieService;
     }
-    
+
     public function index(Request $request)
-    { 
+    {
+        // $this->movieService->updatePrices(); // Wywołanie metody aktualizacji cen
+
         $query = Movie::with('category');
 
         if ($request->has('species') && $request->species != '') {
@@ -31,6 +34,10 @@ class MoviesController extends Controller
 
         if ($request->has('category')) {
             $query->where('category_id', $request->category);
+        }
+
+        if ($request->has('price_min') && $request->has('price_max')) {
+            $query->whereBetween('price_day', [$request->price_min, $request->price_max]);
         }
 
         switch ($request->sort_by) {
@@ -57,25 +64,28 @@ class MoviesController extends Controller
         $movies = $query->paginate(6);
 
         foreach ($movies as $movie) {
-            $promoPrice = $this->movieService->calculateDynamicPrice($movie);
-            $movie->old_price = $promoPrice;
-            $movie->save();
+            // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
+            $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
         }
 
-        return view('movies.index', compact('movies'));  
+        return view('movies.index', compact('movies', 'promoPrice'));
     }
 
     public function show($id)
     {
+        // $this->movieService->updatePrices();
+
         $movie = Movie::with(['category', 'opinions.user'])->where('id', $id)->firstOrFail();
-        $promoPrice = $this->movieService->calculateDynamicPrice($movie);
+        // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
 
-        $movie->old_price = $promoPrice;
-        $movie->save();
+        $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
 
-        return view('movies.show', compact('movie', 'promoPrice'));
+        return view('movies.show', [
+            'movie' => $movie,
+            'promoPrice' => $promoPrice,
+        ]);
     }
-    
+
     public function search(Request $request)
     {
         $query = $request->input('query');

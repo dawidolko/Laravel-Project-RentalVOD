@@ -4,14 +4,57 @@
   @include('layouts.head', ['pageTitle' => 'RentalVOD - strona główna'])
   <head>
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}" />
+    <style>
+      .top-movies-slider {
+          position: relative;
+          width: 100%;
+          height: 50vh;
+          overflow: hidden;
+      }
+      
+      .top-movies-slide {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-size: cover;
+          background-position: center;
+          display: none;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          text-align: center;
+      }
+      
+      .top-movies-slide.active {
+          display: flex;
+      }
+      
+      .top-movies-content {
+          background: rgba(248, 248, 248, 0.55);
+          padding: 20px;
+          border-radius: 10px;
+      }
+      .top-movies-controls {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .top-movies-controls button {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 20px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+      </style>
   </head>
   <body>
     @include('layouts.navbar')
@@ -48,9 +91,11 @@
 
     <div id="unique-categories">
       <div class="unique-wrapper noselect">
+        <hr>
           <div class="unique-h2c">
               <h2 class="unique-title">Kategorie</h2>
           </div>
+          <hr>
           <div class="unique-slider-container">
               @foreach ($categories as $category)
                   <a href="{{ route('movies.index', ['category' => $category->id]) }}" class="unique-frame">
@@ -68,11 +113,53 @@
         <span class="close-btn">&times;</span>
         <img class="overlay-image" src="" alt="Powiększone zdjęcie">
     </div>
-  
+
+    <div class="top-movies-slider" id="topMoviesSlider">
+      <div class="unique-h2c">
+        <hr>
+    </div>
+        @foreach ($topMovies as $index => $movie)
+        <div class="top-movies-slide @if($index === 0) active @endif" style="background-image: url('{{ asset('storage/' . $movie->img_path) }}')">
+            <div class="top-movies-content">
+                <h2 style="color: rgb(82, 82, 82); background: rgba(185, 185, 185, 0.793);">{{ $movie->title }}</h2>
+                <p style="color: rgb(78, 78, 78); background: rgba(216, 216, 216, 0.793);" >#{{ $index + 1 }} Miejsce</p>
+                <p style="color: rgb(94, 94, 94); background: rgba(230, 230, 230, 0.793);">Dostępność: {{ $movie->available }}</p>
+                <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="btn btn-block custom-btn" style="width: 200px;">Przejdź do filmu</a>
+            </div>
+        </div>
+        @endforeach
+        <div class="top-movies-controls">
+            <button id="prevSlide">&lt;</button>
+            <button id="nextSlide">&gt;</button>
+        </div>
+    </div>
+    <hr>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.top-movies-slide');
+            let currentSlide = 0;
+    
+            function showSlide(index) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (index + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+    
+            document.getElementById('prevSlide').addEventListener('click', function() {
+                showSlide(currentSlide - 1);
+            });
+    
+            document.getElementById('nextSlide').addEventListener('click', function() {
+                showSlide(currentSlide + 1);
+            });
+        });
+    </script>
+    
       <div class="new-conti category-section container2 mt-8">
         <div class="product-main">
           <h2 class="title">Wypożycz już dziś</h2>
-  
+          <hr>
           <div class="product-grid">
             @if ($movies->isEmpty())
             <div class="alert alert-danger" role="alert">
@@ -81,48 +168,50 @@
             @else
             @foreach ($movies as $movie)
             <div class="showcase">
-              <div class="showcase-banner">
-                <div class="image-container">
-                  <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img default" />
-                  <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img hover" />
+                <div class="showcase-banner">
+                    <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img hover" style="border-bottom: 1px solid var(--cultured);"/>
+                    <img src="{{ asset('storage/' . $movie->img_path) }}" alt="{{ $movie->category->species }}" class="product-img default" style="border-bottom: 1px solid var(--cultured);"/>
+        
+                    <div class="showcase-actions">
+                        <button class="btn-action magnification">
+                            <ion-icon name="eye-outline"></ion-icon>
+                        </button>
+                        <button class="btn-action bag-add">
+                            <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
+                                <ion-icon name="bag-add-outline"></ion-icon>
+                            </a>
+                        </button>
+                    </div>
                 </div>
-                <div class="showcase-actions">
-                  <button class="btn-action magnification">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </button>
-                  <button class="btn-action bag-add">
+        
+                <div class="showcase-content">
+                    <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="showcase-category card-title text-danger2">{{ $movie->category->species }}</a>
                     <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
-                      <ion-icon name="bag-add-outline"></ion-icon>
+                        <h3 class="showcase-title">{{ $movie->title }}</h3>
                     </a>
-                  </button>
+                    <ul class="list-group list-group-flush bg-secondary" style="text-align: center;">
+                        <li class="list-group-item bg-dark2">Reżyser: <b>{{ $movie->director }}</b></li>
+                        <li class="list-group-item bg-dark3">Rok premiery: <b>{{ $movie->release_year }}</b></li>
+                        <li class="list-group-item bg-dark3">Ocena: <b>{{ $movie->rate }}</b></li>
+                    </ul>
+                    <div class="card-footer text-center" style="background-color: rgba(139, 0, 0, 0.8); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        @if(!empty($movie->super_promo_price))
+                            <h5 class="card-title">{{ $movie->price_day }} zł <del>{{ $movie->old_price }} zł</del></h5>
+                        @elseif(empty($movie->old_price))
+                            <h5 class="card-title"><del>{{ $promoPrice }} zł</del> {{ $movie->price_day }} zł</h5>
+                        @else
+                            <h5 class="card-title">{{ $movie->price_day }} zł</h5>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="w-100 h-100 btn btn-block custom-btn"><b>Przejdź do filmu</b></a>
+                    </div>
                 </div>
-              </div>
-              <div class="showcase-content">
-                <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="showcase-category card-title text-danger2">{{ $movie->category->species }}</a>
-                <a href="{{ route('movies.show', ['id' => $movie->id]) }}">
-                  <h3 class="showcase-title">{{ $movie->title }}</h3>
-                </a>
-                <ul class="list-group list-group-flush bg-secondary" style="text-align: center;">
-                  <li class="list-group-item bg-dark2">Reżyser: <b>{{ $movie->director }}</b></li>
-                  <li class="list-group-item bg-dark3">Rok premiery: <b>{{ $movie->release_year }}</b></li>
-                  <li class="list-group-item bg-dark3">Ocena: <b>{{ $movie->rate }}</b></li>
-                </ul>
-                <div class="card-footer text-center" style="background-color: rgba(139, 0, 0, 0.8); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                    @if($movie->old_price && $movie->old_price != $movie->price_day)
-                        <h5 class="card-title"><del>{{ $movie->old_price }} zł</del> {{ $movie->price_day }} zł</h5>
-                    @else
-                        <h5 class="card-title">{{ $movie->price_day }} zł</h5>
-                    @endif
-                </div>
-                <div class="card-body">
-                  <a href="{{ route('movies.show', ['id' => $movie->id]) }}" class="w-100 h-100 btn btn-block custom-btn"><b>Przejdź do filmu</b></a>
-                </div>
-              </div>
             </div>
-            @endforeach
+        @endforeach        
             @endif
           </div>
-          
+          <hr>
           </div>
         </div>
 

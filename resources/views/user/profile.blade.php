@@ -17,6 +17,7 @@
         .btn-info:hover { background-color: #0080ff; }
         .needs-validation { width: 50%; }
         .photo { width: 50%; display: flex; gap: 20px; }
+        .disabled-link { color: gray; text-decoration: none; cursor: default; }
     </style>
 </head>
 <body style="overflow-x: hidden;">
@@ -28,8 +29,9 @@
         <h1>Twój profil</h1>
     </div>
 </div>
+
 @if (Auth::check())
-<div class="container mt-5 marginbig">
+<div class="container mt-5">
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -49,6 +51,9 @@
     </div>
     @endif
 
+    <div id="snackbar"></div>
+
+
     <div class="card">
         <div class="card-header" style="padding: 20px;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
@@ -57,6 +62,7 @@
                     <p><strong>Email:</strong> {{ Auth::user()->email }}</p>
                     <p><strong>Adres:</strong> {{ Auth::user()->address }}</p>
                     <p><strong>Punkty lojalnościowe:</strong> {{ Auth::user()->loyaltyPoints->points ?? 0 }}</p>
+                    <p><strong>Kod polecający:</strong> {{ $referralCode }}</p>
                     <div>
                         <a href="{{ route('settings') }}" class="btn custom-btn btn-test">Edytuj dane</a>
                         <a href="{{ route('cart.show') }}" class="btn custom-btn btn-test">Koszyk</a>
@@ -81,7 +87,16 @@
         </div>
     </div>
 
-    <h3>Aktualne wypożyczenia:</h3>
+    <h3 style="margin-top:20px;">Wydatki w poszczególnych dniach:</h3>
+    <div class="chart-container" style="position: relative; height:40vh; width:80vw; margin-bottom: 20px;">
+        <canvas id="expensesChart"></canvas>
+    </div>
+    <div class="d-flex justify-content-between mb-4">
+        <button id="prevWeek" class="btn custom-btn">Poprzedni tydzień</button>
+        <button id="nextWeek" class="btn custom-btn">Następny tydzień</button>
+    </div>
+
+    <h3 style="margin-top:20px;">Aktualne wypożyczenia:</h3>
     @if($loans->isEmpty())
     <div class="alert alert-danger" role="alert">
         BRAK WYPOŻYCZONYCH FILMÓW
@@ -109,10 +124,14 @@
                                                              ->where('user_id', auth()->id())
                                                              ->first();
                         @endphp
-                        @if ($premiumMovie)
-                        <a href="{{ route('loans.premium', $movie->id) }}">{{ $movie->title }}</a>
+                        @if ($loan->status !== 'zwrócone')
+                            @if ($premiumMovie)
+                            <a href="{{ route('loans.premium', $movie->id) }}">{{ $movie->title }}</a>
+                            @else
+                            <a href="{{ route('loans.show', $movie->id) }}">{{ $movie->title }}</a>
+                            @endif
                         @else
-                        <a href="{{ route('loans.show', $movie->id) }}">{{ $movie->title }}</a>
+                            <span class="disabled-link">{{ $movie->title }}</span>
                         @endif
                     </td>
                     <td>{{ $loan->start }}</td>
@@ -194,6 +213,74 @@
 @endif
 
 @include('layouts.footer', ['fixedBottom' => false])
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('expensesChart').getContext('2d');
+        const expensesData = @json($expensesData);
+
+        let currentWeekIndex = 0;
+        const weeks = chunkArray(expensesData, 7);
+
+        function updateChart(weekIndex) {
+            const weekData = weeks[weekIndex] || [];
+            const labels = weekData.map(day => day.date);
+            const data = weekData.map(day => day.amount);
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.update();
+
+            document.getElementById('prevWeek').style.display = weekIndex > 0 ? 'block' : 'none';
+            document.getElementById('nextWeek').style.display = weekIndex < weeks.length - 1 ? 'block' : 'none';
+        }
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Wydatki (zł)',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('prevWeek').addEventListener('click', function() {
+            if (currentWeekIndex > 0) {
+                currentWeekIndex--;
+                updateChart(currentWeekIndex);
+            }
+        });
+
+        document.getElementById('nextWeek').addEventListener('click', function() {
+            if (currentWeekIndex < weeks.length - 1) {
+                currentWeekIndex++;
+                updateChart(currentWeekIndex);
+            }
+        });
+
+        function chunkArray(array, size) {
+            const result = [];
+            for (let i = 0; i < array.length; i += size) {
+                result.push(array.slice(i, i + size));
+            }
+            return result;
+        }
+
+        updateChart(currentWeekIndex);
+    });
+</script>
 <script>
     function toggleReviewForm(loanId) {
         var form = document.getElementById('review-form-' + loanId);
@@ -247,5 +334,175 @@
         });
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('expensesChart').getContext('2d');
+        const expensesData = @json($expensesData);
+
+        let currentWeekIndex = 0;
+        const weeks = chunkArray(expensesData, 7);
+
+        function updateChart(weekIndex) {
+            const weekData = weeks[weekIndex] || [];
+            const labels = weekData.map(day => day.date);
+            const data = weekData.map(day => day.amount);
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.update();
+
+            document.getElementById('prevWeek').style.display = weekIndex > 0 ? 'block' : 'none';
+            document.getElementById('nextWeek').style.display = weekIndex < weeks.length - 1 ? 'block' : 'none';
+        }
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Wydatki (zł)',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('prevWeek').addEventListener('click', function() {
+            if (currentWeekIndex > 0) {
+                currentWeekIndex--;
+                updateChart(currentWeekIndex);
+            }
+        });
+
+        document.getElementById('nextWeek').addEventListener('click', function() {
+            if (currentWeekIndex < weeks.length - 1) {
+                currentWeekIndex++;
+                updateChart(currentWeekIndex);
+            }
+        });
+
+        function chunkArray(array, size) {
+            const result = [];
+            for (let i = 0; i < array.length; i += size) {
+                result.push(array.slice(i, i + size));
+            }
+            return result;
+        }
+
+        updateChart(currentWeekIndex);
+    });
+</script>
+<script>
+    function toggleReviewForm(loanId) {
+        var form = document.getElementById('review-form-' + loanId);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function togglePaymentForm(loanId) {
+        var form = document.getElementById('payment-form-' + loanId);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('[id^="payment-form-"]');
+        forms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                const expiryDateInput = form.querySelector('[name="expiryDate"]');
+                const expiryDateValue = expiryDateInput.value;
+                const currentDate = new Date();
+                const expiryDate = new Date(expiryDateValue + '-01');
+
+                if (expiryDate < currentDate) {
+                    event.preventDefault();
+                    alert('Data ważności karty nie może być z przeszłości.');
+                }
+            });
+
+            const expiryDateInput = form.querySelector('[name="expiryDate"]');
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const minExpiryDate = `${currentYear}-${currentMonth}`;
+            expiryDateInput.min = minExpiryDate;
+        });
+
+        const avatarForm = document.querySelector('.needs-validation');
+        avatarForm.addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('avatar');
+            let valid = true;
+
+            if (fileInput.files.length === 0) {
+                valid = false;
+                fileInput.classList.add('is-invalid');
+            } else {
+                fileInput.classList.remove('is-invalid');
+            }
+
+            if (!valid) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+    });
+</script>
+
+<script>
+    // Snackbar logic
+    function showSnackbar(message) {
+        var snackbar = document.getElementById("snackbar");
+        snackbar.innerHTML = message;
+        snackbar.className = "show";
+        setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 8000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('points_message'))
+            showSnackbar("{{ session('points_message') }}");
+        @endif
+    });
+</script>
+
+<style>
+    #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #720e0e;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #snackbar.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+        from {bottom: 0; opacity: 0;} 
+        to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+        from {bottom: 30px; opacity: 1;} 
+        to {bottom: 0; opacity: 0;}
+    }
+</style>
 </body>
 </html>

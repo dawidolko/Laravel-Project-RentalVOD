@@ -76,12 +76,12 @@
                                 <li class="list-group-item bg-dark5"><strong>Ocena:</strong> {{ $movie->rate }}</li>
                                 <li class="list-group-item bg-dark6"><strong>Cena za dzień wypożyczenia:</strong> 
                                     <div class="card-footer text-center" style="background-color: rgba(139, 0, 0, 0.8); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                                        @if($movie->old_price && $movie->old_price != $movie->price_day)
-                                            <h5 class="card-title"><del>{{ $movie->old_price }} zł</del> {{ $movie->price_day }} zł</h5>
+                                        @if(isset($movie->old_price) && $movie->old_price != $movie->price_day)
+                                            <h5 class="card-title">{{ $movie->price_day }} zł <del>{{ $movie->old_price }} zł</del></h5>
                                         @else
                                             <h5 class="card-title">{{ $movie->price_day }} zł</h5>
                                         @endif
-                                    </div>
+                                      </div>
                                 </li>
                             </ul>
                             <hr />
@@ -143,6 +143,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 @include('layouts.footer', ['fixedBottom' => false])

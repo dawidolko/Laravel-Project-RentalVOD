@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateMovieRequest;
 use App\Http\Requests\AddMovieRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddCategoryRequest;
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Movie;
 use App\Models\Loan;
@@ -36,11 +37,10 @@ class AdminController extends Controller
         $movies = Movie::paginate(10);
 
 
-        foreach ($movies as $movie) {
-            $dynamicPrice = $this->movieService->calculateDynamicPrice($movie);
-            $movie->price_day = $dynamicPrice;
-            $movie->save();
-        }
+        // foreach ($movies as $movie) {
+        //     $movie->price_day;
+        //     $movie->save();
+        // }
 
         return view('admin.editMovies', compact('movies'));
     }
@@ -55,7 +55,7 @@ class AdminController extends Controller
     public function updateMovie(UpdateMovieRequest $request, $id)
     {
         $movie = Movie::findOrFail($id);
-        $data = $request->all();
+        $data = $request->validated();
 
         if ($request->hasFile('img_path')) {
             Storage::delete($movie->img_path);
@@ -64,21 +64,14 @@ class AdminController extends Controller
             $data['img_path'] = 'img/' . basename($imagePath);
         }
 
-        $category = Category::find($request->category_id);
-        if (!$category) {
-            $category = new Category();
-            $category->id = $request->category_id;
-            $category->save();
-        }
-
-        $movie->update(array_merge($data, ['category_id' => $category->id]));
+        $movie->update($data);
 
         return redirect()->route('admin.movies')->with('success', 'Film został zaktualizowany.');
     }    
     
     public function addMovie(AddMovieRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         if ($request->hasFile('img_path')) {
             $imagePath = $request->file('img_path')->store('public/img'); 
@@ -88,14 +81,7 @@ class AdminController extends Controller
             $data['img_path'] = 'default.jpg';
         }
 
-        $category = Category::find($request->category_id);
-        if (!$category) {
-            $category = new Category();
-            $category->id = $request->category_id;
-            $category->save();
-        }
-
-        Movie::create(array_merge($data, ['category_id' => $category->id]));
+        Movie::create($data);
 
         return redirect()->route('admin.movies')->with('success', 'Film został dodany pomyślnie.');
     }
@@ -147,5 +133,17 @@ class AdminController extends Controller
         $category->save();
 
         return redirect()->route('admin.movies')->with('success', 'Kategoria została dodana pomyślnie.');
+    }
+    public function setSuperPromoPrice(Request $request, $id)
+    {
+        $movie = Movie::findOrFail($id);
+
+        $movie->old_price = $movie->price_day;
+        $movie->price_day = $request->super_promo_price;
+        $movie->super_promo_price = $request->super_promo_price;
+        $movie->last_promo_update = now();
+        $movie->save();
+
+        return redirect()->route('admin.movies')->with('success', 'Super promocja została ustawiona.');
     }
 }

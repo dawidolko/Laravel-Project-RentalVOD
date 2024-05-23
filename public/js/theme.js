@@ -3,18 +3,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const themeIcon = document.getElementById("theme-icon");
     const body = document.body;
 
+    // Domyślnie ustawiony tryb ciemny
     body.setAttribute("data-bs-theme", "dark");
-    themeIcon.classList.add("bi-moon-stars");
+    themeIcon.classList.add("fas", "fa-moon");
 
     themeToggleButton.addEventListener("click", function () {
         const theme = body.getAttribute("data-bs-theme");
 
         if (theme === "dark") {
             body.setAttribute("data-bs-theme", "light");
-            themeIcon.classList.replace("bi-moon-stars", "bi-sun");
+            themeIcon.classList.replace("fa-moon", "fa-sun");
         } else {
             body.setAttribute("data-bs-theme", "dark");
-            themeIcon.classList.replace("bi-sun", "bi-moon-stars");
+            themeIcon.classList.replace("fa-sun", "fa-moon");
         }
     });
 });

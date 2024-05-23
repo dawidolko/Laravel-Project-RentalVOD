@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\LoyaltyPoint;
+use App\Models\ReferralCode;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\MoviesSeeder;
 use Database\Seeders\UsersSeeder;
@@ -23,5 +26,20 @@ class DatabaseSeeder extends Seeder
             LoansMoviesSeeder::class,
             OpinionsSeeder::class,
         ]);
+        User::all()->each(function ($user) {
+            if (!$user->referralCode) {
+                ReferralCode::create([
+                    'user_id' => $user->id,
+                    'code' => substr(md5($user->id . microtime()), 0, 8)
+                ]);
+            }
+
+            if (!$user->loyaltyPoints) {
+                LoyaltyPoint::create([
+                    'user_id' => $user->id,
+                    'points' => 0
+                ]);
+            }
+        });
     }
 }

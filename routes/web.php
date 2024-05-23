@@ -8,15 +8,17 @@ use App\Http\Controllers\MoviesController;
 use App\Http\Controllers\OpinionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\ShareDataToViews;
+use App\Http\Middleware\EnsureUserHasLoyaltyPoints;
 use App\Http\Middleware\IsAdmin;
 
-Route::middleware([ShareDataToViews::class])->group(function () {
+Route::middleware([ShareDataToViews::class, EnsureUserHasLoyaltyPoints::class])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/regulamin', [HomeController::class, 'regulamin'])->name('regulamin');
     Route::get('/search', [MoviesController::class, 'search'])->name('movies.search');
     Route::get('/movies', [MoviesController::class, 'index'])->name('movies.index');
     Route::get('/movie/{id}', [MoviesController::class, 'show'])->name('movies.show');
+    Route::post('/movies/{id}/setSuperPromoPrice', [AdminController::class, 'setSuperPromoPrice'])->name('movies.setSuperPromoPrice');
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('/auth/login', 'login')->name('login');

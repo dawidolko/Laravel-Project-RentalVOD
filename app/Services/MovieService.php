@@ -5,33 +5,68 @@ namespace App\Services;
 use App\Models\Movie;
 use App\Models\Loan;
 use App\Models\PremiumMovie;
+use Carbon\Carbon;
 
 class MovieService
 {
     public function calculateDynamicPrice(Movie $movie)
     {
-        // Liczba wypożyczeń danego filmu
         $loansCount = Loan::whereHas('movies', function ($query) use ($movie) {
             $query->where('movie_id', $movie->id);
         })->count();
 
-        // Liczba zakupów wersji premium danego filmu
         $premiumCount = PremiumMovie::where('movie_id', $movie->id)->count();
 
-        // Progi popularności
         $highPopularityThreshold = 20;
         $mediumPopularityThreshold = 10;
 
-        // Bazowa cena filmu
-        $basePrice = $movie->price_day;
+        $basePrice = $movie->old_price; // Używamy old_price jako bazowej ceny
 
-        // Dynamiczna zmiana ceny w zależności od popularności
         if ($loansCount + $premiumCount >= $highPopularityThreshold) {
-            return $basePrice * 1.5; // Podwyżka o 50%
+            return round($basePrice * 1.5, 2);
         } elseif ($loansCount + $premiumCount >= $mediumPopularityThreshold) {
-            return $basePrice * 1.25; // Podwyżka o 25%
+            return round($basePrice * 1.25, 2);
         } else {
-            return $basePrice * 0.75; // Obniżka o 25%
+            return round($basePrice * 0.75, 2);
         }
+    }
+
+    public function getPriceWithSuperPromotion(Movie $movie)
+    {
+        return $movie->super_promo_price ?? $this->calculateDynamicPrice($movie);
+    }
+
+    public function calculatePromoPrice($price)
+    {
+        if ($price < 9) {
+            return $price;
+        } elseif ($price < 15) {
+            return $price - 2;
+        } else {
+            return $price - 5;
+        }
+    }
+
+    public function updatePrices()
+    {
+        $movies = Movie::all();
+
+        foreach ($movies as $movie) {
+            if ($this->shouldUpdatePrice($movie)) {
+                if ($movie->super_promo_price === null) {
+                    $dynamicPrice = $this->calculateDynamicPrice($movie);
+                    $movie->old_price = $movie->price_day;
+                    $movie->price_day = $dynamicPrice;
+                    $movie->last_promo_update = Carbon::now();
+                    $movie->save();
+                }
+            }
+        }
+    }
+
+    public function shouldUpdatePrice(Movie $movie)
+    {
+        $lastUpdate = Carbon::parse($movie->last_promo_update);
+        return $lastUpdate->diffInSeconds(Carbon::now()) >= 10; // Aktualizacja co 10 sekund
     }
 }

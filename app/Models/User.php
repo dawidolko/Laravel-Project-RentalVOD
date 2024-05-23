@@ -52,5 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(LoyaltyPoint::class);
     }
+
+    public function referralCode()
+    {
+        return $this->hasOne(ReferralCode::class);
+    }
 }
 

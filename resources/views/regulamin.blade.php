@@ -1,20 +1,20 @@
 @include('layouts.html')
-  
-  @include('layouts.head', ['pageTitle' => 'RentalVOD - regulamin'])
-  <head>
+
+@include('layouts.head', ['pageTitle' => 'RentalVOD - regulamin'])
+<head>
     <style>
         ul>li {
             font-weight: lighter;
             color: rgba(255, 255, 255, 0.603);
         }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     @include('layouts.navbar')
 
     <h1 class="text-white container mt-5">Regulamin</h1>
     <ol class="text-danger2 fw-bold container mt-5">
-        <li class=>Rejestracja
+        <li class="registration">Rejestracja
             <ul>
                 <li>Każdy użytkownik pragnący korzystać z usług RentalVOD musi zarejestrować się, podając swoje rzeczywiste dane osobowe, w tym imię, nazwisko, adres zamieszkania oraz adres e-mail.</li>
                 <li>Użytkownik zobowiązany jest do aktualizacji swoich danych osobowych w serwisie w przypadku ich zmiany.</li>
@@ -76,6 +76,17 @@
                 <li>RentalVOD zastrzega sobie prawo do wprowadzania zmian w regulaminie. Użytkownicy zostaną poinformowani o wszelkich zmianach przez aktualizacje na stronie internetowej.</li>
             </ul>
         </li>
+
+        <li>Punkty lojalnościowe
+            <ul>
+                <li>Użytkownicy mogą zdobywać punkty lojalnościowe na następujących zasadach:</li>
+                <li>+10 punktów za każde wypożyczenie filmu.</li>
+                <li>+20 punktów za rejestrację z użyciem kodu polecającego innego użytkownika.</li>
+                <li>Punkty mogą być wymieniane na różne korzyści:</li>
+                <li>Wykupienie jakości premium za punkty lojalnościowe.</li>
+                <li>Wypożyczenie filmu za 50 punktów.</li>
+            </ul>
+        </li>        
 
         <li>Postanowienia końcowe
             <ul>

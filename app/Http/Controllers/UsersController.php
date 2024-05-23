@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateAddressRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Http\Requests\UpdateCartRequest;
+use DB;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -21,8 +22,23 @@ class UsersController extends Controller
     {
         $user_id = Auth::id();
         $loans = Loan::with('movies')->where('user_id', $user_id)->paginate(3);
-        return view('user.profile', compact('loans'));
-    }    
+        $referralCode = Auth::user()->referralCode->code ?? 'Brak'; 
+
+        $expensesData = Loan::where('user_id', $user_id)
+            ->where('start', '>=', now()->subMonth())
+            ->selectRaw('DATE(start) as date, SUM(price) as amount')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'date' => $item->date,
+                    'amount' => $item->amount
+                ];
+            });
+
+        return view('user.profile', compact('loans', 'referralCode', 'expensesData'));
+    }
 
     public function showMovie($movie_id)
     {
@@ -140,21 +156,21 @@ class UsersController extends Controller
         if (empty($cart)) {
             return redirect()->route('cart.show')->with('error', 'Koszyk jest pusty.');
         }
-
+    
         $user = Auth::user();
         $loyaltyPoints = $user->loyaltyPoints->points ?? 0;
-
+    
         foreach ($cart as $id => $details) {
             if (empty($details['start']) || empty($details['end'])) {
                 return back()->with('error', 'Niepoprawne daty wypożyczenia dla jednego z filmów.');
             }
-
+    
             $startDate = new DateTime($details['start']);
             $endDate = new DateTime($details['end']);
             if ($endDate < $startDate) {
                 return back()->with('error', 'Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.');
             }
-
+    
             $loan = new Loan();
             $loan->user_id = $user->id;
             $loan->start = $startDate->format('Y-m-d');
@@ -168,24 +184,27 @@ class UsersController extends Controller
                 $user->loyaltyPoints->points = $loyaltyPoints;
                 $user->loyaltyPoints->save();
             }
-
+    
             $loan->price = $moviePrice * $diff;
             $loan->status = StatusLoan::WYNAJEM;
             $loan->save();
-
+    
             $loan->movies()->attach($id);
-
+    
             if ($moviePrice > 0) {
                 $pointsEarned = 10; 
                 $userLoyaltyPoints = $user->loyaltyPoints()->firstOrCreate(['user_id' => $user->id]);
                 $userLoyaltyPoints->points += $pointsEarned;
                 $userLoyaltyPoints->save();
+    
+                // Dodanie komunikatu o przyroście punktów do sesji
+                session()->flash('points_message', "Zdobyłeś $pointsEarned punktów lojalnościowych!");
             }
         }
-
+    
         session()->forget('cart');
         return redirect()->route('user.profile')->with('success', 'Zakup udany. Produkty zostały dodane do Twojej historii wypożyczeń.');
-    }
+    }    
 
     public function updateCart(UpdateCartRequest $request, $movie_id)
     {

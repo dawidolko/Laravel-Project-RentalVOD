@@ -12,9 +12,8 @@ class Movie extends Model
     protected $table = 'movies';
 
     protected $fillable = [
-        'id', 'title', 'description', 'category_id', 'director', 'release_year', 'duration', 'rate', 'img_path', 'video_path', 'price_day', 'old_price', 'available' 
+        'id', 'title', 'description', 'category_id', 'director', 'release_year', 'duration', 'rate', 'img_path', 'video_path', 'price_day', 'old_price', 'super_promo_price', 'last_promo_update', 'available'
     ];
-
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
