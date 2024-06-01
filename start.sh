@@ -29,6 +29,10 @@ composer require stripe/stripe-php
 
 composer require bensampo/laravel-enum
 
+composer require --dev barryvdh/laravel-ide-helper
+
+composer require hoa/ruler
+
 php artisan key:generate
 
 php artisan storage:link
@@ -38,8 +42,6 @@ php artisan storage:link
 # php artisan db:seed
 
 php artisan migrate:fresh --seed
-
-composer require --dev barryvdh/laravel-ide-helper
 
 php artisan ide-helper:generate
 

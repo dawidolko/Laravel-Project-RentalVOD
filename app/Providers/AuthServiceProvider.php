@@ -2,15 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\Movie;
+use App\Models\User;
+use App\Policies\CartPolicy;
+use App\Policies\MoviePolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        'App\Models\Movie' => 'App\Policies\MoviePolicy',
-        'App\Models\User' => 'App\Policies\UserPolicy',
-        'App\Models\Loan' => 'App\Policies\LoanPolicy',
+        Movie::class => MoviePolicy::class,
+        User::class => UserPolicy::class,
+        User::class => CartPolicy::class,
     ];
     
     public function boot()
@@ -20,5 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-admin', function ($user) {
             return $user->role_id == 1;
         });
+
+        Gate::define('access-cart', [CartPolicy::class, 'access']);
     }
 }

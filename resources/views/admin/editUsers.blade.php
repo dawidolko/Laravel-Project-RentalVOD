@@ -1,5 +1,4 @@
 @include('layouts.html')
-@include('layouts.slider')
 @include('layouts.head', ['pageTitle' => 'RentalVOD - admin users'])
 
 <head>
@@ -7,91 +6,20 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
-    <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        html, body {
-            height: 100%; 
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; 
-        }
-
-        .container {
-            flex: 1; 
-            display: flex;
-            flex-direction: column; 
-        }
-
-        .footer {
-            margin-top: auto;
-        }
-
-        .container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .list-group-item {
-            border-bottom: 1px solid #ccc;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-        }
-        .user-info > span {
-            margin-right: 15px;
-            white-space: nowrap;
-        }
-        .button-group a {
-            margin-right: 10px;
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
-        img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .btn-secondary{
-            margin-right: 10px;
-        }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/moviesStyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styleUsers.css') }}">
 </head>
 
 <body>
     @include('layouts.navbar')
     <div class="container w-100">
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+        @include('layouts.success')
 
-        @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </ul>
-        </div>
-        @endif
+        @include('layouts.errors')
 
         <h1>Wszyscy klienci</h1>
-        <div class="table-responsive"> 
+        <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -115,12 +43,12 @@
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->address }}</td>
                         <td>{{ str_repeat('*', 5) }}</td>
-                        <td style="display: flex;">
-                            <a href="#" class="btn btn-secondary" onclick="toggleEditPanel('{{ $user->id }}')">Edytuj</a>
+                        <td style="display: flex; flex-direction: column; align-items: center;">
+                            <button class="btn btn-success btn-sm" style="margin-bottom:10px;" onclick="toggleEditPanel('{{ $user->id }}')">Edytuj</button>
                             <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST" style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?')">Usuń</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?')">Usuń</button>
                             </form>
                         </td>
                     </tr>
@@ -149,7 +77,7 @@
                                     <input class="form-check-input" type="checkbox" id="admin" name="admin" @if($user->isAdmin()) checked @endif>
                                     <label class="form-check-label" for="admin">Administrator</label>
                                 </div>
-                                <button type="submit" class="btn btn-secondary m-2 w-30">Zapisz</button>
+                                <button type="submit" class="btn btn-secondary btn-sm">Zapisz</button>
                             </form>
                         </td>
                     </tr>
@@ -159,7 +87,7 @@
         </div>
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
-                {{ $users->links('pagination::bootstrap-4') }} 
+                {{ $users->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>
@@ -175,6 +103,8 @@
                 editPanel.style.display = 'none';
             }
         }
+
     </script>
 </body>
+
 </html>

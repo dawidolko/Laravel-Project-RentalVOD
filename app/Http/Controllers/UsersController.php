@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FriendshipStatus;
 use App\Models\Loan;
 use App\Models\Movie;
 use App\Models\PremiumMovie;
@@ -13,7 +14,8 @@ use App\Http\Requests\UpdateAddressRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Http\Requests\UpdateCartRequest;
-use DB;
+use App\Models\Friendship;
+use App\Models\Recommendation;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -22,8 +24,8 @@ class UsersController extends Controller
     {
         $user_id = Auth::id();
         $loans = Loan::with('movies')->where('user_id', $user_id)->paginate(3);
-        $referralCode = Auth::user()->referralCode->code ?? 'Brak'; 
-
+        $referralCode = Auth::user()->referralCode->code ?? 'Brak';
+    
         $expensesData = Loan::where('user_id', $user_id)
             ->where('start', '>=', now()->subMonth())
             ->selectRaw('DATE(start) as date, SUM(price) as amount')
@@ -36,10 +38,22 @@ class UsersController extends Controller
                     'amount' => $item->amount
                 ];
             });
-
-        return view('user.profile', compact('loans', 'referralCode', 'expensesData'));
+    
+        $friendRequests = Friendship::where('friend_id', $user_id)->where('status', FriendshipStatus::Pending)->get();
+        
+        $friends = Friendship::where(function($query) use ($user_id) {
+            $query->where('user_id', $user_id)
+                  ->orWhere('friend_id', $user_id);
+        })->where('status', FriendshipStatus::Accepted)->get()->map(function ($friendship) use ($user_id) {
+            return $friendship->user_id == $user_id ? $friendship->friend : $friendship->user;
+        })->unique('id');
+    
+        $pendingRequests = Friendship::where('user_id', $user_id)->where('status', FriendshipStatus::Pending)->get();
+        $recommendations = Recommendation::where('friend_id', $user_id)->get();
+    
+        return view('user.profile', compact('loans', 'referralCode', 'expensesData', 'friendRequests', 'friends', 'pendingRequests', 'recommendations'));
     }
-
+    
     public function showMovie($movie_id)
     {
         $user_id = Auth::id();
@@ -75,8 +89,12 @@ class UsersController extends Controller
 
     public function showCart()
     {
+        if (Auth::user()->role_id == 1) {
+            return redirect('/')->withErrors(['error' => 'Administratorzy nie mają dostępu do koszyka.']);
+        }
+    
         return view('user.cart');
-    }
+    }     
 
     public function showSettings()
     {
@@ -119,9 +137,14 @@ class UsersController extends Controller
 
     public function addToCart(Request $request, $movie_id)
     {
+        $user = Auth::user();
+        if ($user->role_id == 1) {
+            return redirect('/')->withErrors(['error' => 'Administratorzy nie mogą dodawać rzeczy do koszyka.']);
+        }
+    
         $movie = Movie::findOrFail($movie_id);
         $cart = session()->get('cart', []);
-
+    
         if (!isset($cart[$movie_id])) {
             $cart[$movie_id] = [
                 "name" => $movie->title,
@@ -134,7 +157,7 @@ class UsersController extends Controller
             $cart[$movie_id]['quantity'] += 1;
             $cart[$movie_id]['totalCost'] = $cart[$movie_id]['quantity'] * $movie->price_day;
         }
-
+    
         session()->put('cart', $cart);
         return redirect()->route('cart.show')->with('success', 'Film dodany do koszyka.');
     }
@@ -197,7 +220,6 @@ class UsersController extends Controller
                 $userLoyaltyPoints->points += $pointsEarned;
                 $userLoyaltyPoints->save();
     
-                // Dodanie komunikatu o przyroście punktów do sesji
                 session()->flash('points_message', "Zdobyłeś $pointsEarned punktów lojalnościowych!");
             }
         }

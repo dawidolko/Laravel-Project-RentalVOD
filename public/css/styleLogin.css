@@ -1,0 +1,24 @@
+.marginbig {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 81vh;
+}
+
+.marginbig {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 81vh;
+}
+
+.custom-btn {
+    background-color: gray;
+    color: black;
+    border: none;
+}
+
+.custom-btn:hover {
+    background-color: darkred;
+    color: white;
+}

@@ -1,0 +1,86 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.marginbig {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.custom-btn {
+    background-color: gray;
+    color: black;
+    border: none;
+}
+
+.custom-btn:hover {
+    background-color: darkred;
+    color: white;
+}
+
+.full-height {
+    min-height: 87vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.text-large {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.table {
+    width: 100%;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: center;
+}
+
+.img {
+    width: 100px;
+}
+
+.date-input {
+    max-width: 150px;
+}
+
+.payment-section {
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}

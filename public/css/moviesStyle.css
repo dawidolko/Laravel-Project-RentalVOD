@@ -110,6 +110,7 @@ a {
     -ms-grid-columns: 1fr;
     grid-template-columns: 1fr;
     gap: 25px;
+    padding: 20px;
 }
 
 .product-grid .showcase {

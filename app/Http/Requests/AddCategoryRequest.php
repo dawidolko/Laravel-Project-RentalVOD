@@ -17,4 +17,14 @@ class AddCategoryRequest extends FormRequest
             'genre' => 'required|string|max:255|unique:categories,species',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'genre.required' => 'Pole gatunek jest wymagane.',
+            'genre.string' => 'Pole gatunek musi być ciągiem znaków.',
+            'genre.max' => 'Pole gatunek nie może przekraczać 255 znaków.',
+            'genre.unique' => 'Taka kategoria już istnieje.',
+        ];
+    }
 }

@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
-use App\Models\PremiumMovie;
 use App\Services\MovieService;
-use Auth;
 use File;
 use Illuminate\Http\Request;
-use Redirect;
 use Response;
 
 class MoviesController extends Controller
@@ -22,7 +19,7 @@ class MoviesController extends Controller
 
     public function index(Request $request)
     {
-        // $this->movieService->updatePrices(); // Wywołanie metody aktualizacji cen
+        $this->movieService->updatePrices();
 
         $query = Movie::with('category');
 
@@ -63,26 +60,29 @@ class MoviesController extends Controller
 
         $movies = $query->paginate(6);
 
-        foreach ($movies as $movie) {
-            // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
-            $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
+        $promotionsEnabled = $this->movieService->arePromotionsEnabled();
+        if ($promotionsEnabled) {
+            foreach ($movies as $movie) {
+                $movie->promo_price = $this->movieService->calculatePromoPrice($movie->price_day);
+            }
         }
 
-        return view('movies.index', compact('movies', 'promoPrice'));
+        return view('movies.index', compact('movies', 'promotionsEnabled'));
     }
 
     public function show($id)
     {
-        // $this->movieService->updatePrices();
+        $this->movieService->updatePrices();
 
         $movie = Movie::with(['category', 'opinions.user'])->where('id', $id)->firstOrFail();
-        // $movie->current_price = $this->movieService->getPriceWithSuperPromotion($movie);
 
-        $promoPrice = $this->movieService->calculatePromoPrice($movie->price_day);
+        $promotionsEnabled = $this->movieService->arePromotionsEnabled();
+        $promoPrice = $promotionsEnabled ? $this->movieService->calculatePromoPrice($movie->price_day) : null;
 
         return view('movies.show', [
             'movie' => $movie,
             'promoPrice' => $promoPrice,
+            'promotionsEnabled' => $promotionsEnabled,
         ]);
     }
 

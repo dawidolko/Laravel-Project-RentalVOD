@@ -4,6 +4,7 @@
     overflow-y: hidden;
     position: relative;
     max-height: 135vh;
+    max-width: 99%;
 }
 
 .unique-title {
@@ -63,13 +64,13 @@
 .unique-scroll-left,
 .unique-scroll-right {
     position: absolute;
-    top: 50%;
+    top: 70%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
     color: white;
     border: none;
     cursor: pointer;
-    padding: 10px;
+    padding: 25px;
     z-index: 100;
     opacity: 0.5;
 }

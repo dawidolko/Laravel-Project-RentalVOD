@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('email', 255)->unique();
             $table->string('address', 255);
             $table->string('password', 255);
-            // Dodanie ograniczenia na datę urodzenia, użytkownik nie może mieć więcej niż 150 lat
             $table->date('birth_date')->nullable()->check('birth_date > DATE_SUB(CURDATE(), INTERVAL 150 YEAR)');
         });
         

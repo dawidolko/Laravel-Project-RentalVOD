@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\View\Composers\CategoryComposer;
 use App\Models\Category;
-use App\Models\User;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Gate;

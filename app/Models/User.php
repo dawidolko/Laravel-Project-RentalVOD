@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,6 +55,38 @@ class User extends Authenticatable
     public function referralCode()
     {
         return $this->hasOne(ReferralCode::class);
+    }
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'accepted');
+    }
+
+    public function friendRequests()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'pending');
+    }
+
+    public function sentFriendRequests()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'pending');
+    }
+
+    public function receivedFriendRequests()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'pending');
+    }
+
+    public function movieRecommendations()
+    {
+        return $this->hasMany(Recommendation::class, 'friend_id');
     }
 }
 

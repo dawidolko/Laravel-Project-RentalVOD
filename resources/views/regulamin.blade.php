@@ -1,14 +1,17 @@
 @include('layouts.html')
 
 @include('layouts.head', ['pageTitle' => 'RentalVOD - regulamin'])
+
 <head>
     <style>
         ul>li {
             font-weight: lighter;
             color: rgba(255, 255, 255, 0.603);
         }
+
     </style>
 </head>
+
 <body>
     @include('layouts.navbar')
 
@@ -86,7 +89,7 @@
                 <li>Wykupienie jakości premium za punkty lojalnościowe.</li>
                 <li>Wypożyczenie filmu za 50 punktów.</li>
             </ul>
-        </li>        
+        </li>
 
         <li>Postanowienia końcowe
             <ul>
@@ -102,4 +105,5 @@
 
     @include('layouts.footer', ['fixedBottom' => false])
 </body>
+
 </html>

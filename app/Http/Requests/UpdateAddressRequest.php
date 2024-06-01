@@ -14,15 +14,16 @@ class UpdateAddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'address' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s,.-]+$/',
+            'address' => 'required|string|max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            'address.required' => 'Adres jest wymagany.',
-            'address.regex' => 'Adres może zawierać tylko litery, cyfry, spacje oraz znaki ,.-',
+            'address.required' => 'Pole adres jest wymagane.',
+            'address.string' => 'Pole adres musi być ciągiem znaków.',
+            'address.max' => 'Pole adres nie może przekraczać 255 znaków.',
         ];
     }
 }

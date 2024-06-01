@@ -12,6 +12,10 @@ call composer require stripe/stripe-php
 
 call composer require bensampo/laravel-enum
 
+call composer require hoa/ruler
+
+call composer require --dev barryvdh/laravel-ide-helper
+
 call php artisan key:generate
 
 call php artisan storage:link
@@ -21,8 +25,6 @@ call php artisan storage:link
 @REM call php artisan db:seed
 
 call php artisan migrate:fresh --seed
-
-call composer require --dev barryvdh/laravel-ide-helper
 
 call php artisan ide-helper:generate
 

@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const themeIcon = document.getElementById("theme-icon");
     const body = document.body;
 
-    // Domyślnie ustawiony tryb ciemny
     body.setAttribute("data-bs-theme", "dark");
     themeIcon.classList.add("fas", "fa-moon");
 

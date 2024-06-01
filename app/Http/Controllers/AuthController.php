@@ -59,7 +59,7 @@ class AuthController extends Controller
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
             'address' => $validatedData['address'],
-            'role_id' => 2 // Przypisuje nowym użytkownikom rolę klienta, ponieważ rola nr.1 to admin.
+            'role_id' => 2
         ]);
 
         ReferralCode::create([
@@ -77,7 +77,6 @@ class AuthController extends Controller
             if ($referrer) {
                 $referrer->user->loyaltyPoints()->increment('points', 20);
 
-                // Dodanie komunikatu o przyroście punktów do sesji
                 Session::flash('points_message', 'Dzieki użyciu kodu osoba której jest kod polecający dostała 20 punktów!');
             }
         }
